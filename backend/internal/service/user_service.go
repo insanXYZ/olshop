@@ -116,7 +116,7 @@ func (service *UserService) GetUser(claims jwt.MapClaims) (*model.UserResponse, 
 		return nil, err
 	}
 
-	return converter.UserToGetDetail(user), nil
+	return converter.UserToResponse(user), nil
 }
 
 func (service *UserService) UpdateUser(c echo.Context, claims jwt.MapClaims, req *model.UpdateUser) error {

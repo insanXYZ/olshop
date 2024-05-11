@@ -6,10 +6,10 @@ import (
 
 func main() {
 	viperConfig := config.NewViper()
-	log := config.NewLogger(viperConfig)
+	log := config.NewLogger()
 	db := config.NewDatabase(viperConfig, log)
 	validate := config.NewValidator()
-	app := config.NewEcho()
+	app := config.NewEcho(log)
 
 	config.Bootstrap(&config.BootstrapConfig{
 		DB:          db,

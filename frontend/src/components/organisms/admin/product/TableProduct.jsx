@@ -51,7 +51,7 @@ export default ({ list, onDelete }) => {
       ),
       selector: (row) => (
         <div>
-          <CarouselProduct images={row.images} source="path" width={"w-32"} />
+          <CarouselProduct images={row.images} className="w-28" />
         </div>
       ),
     },

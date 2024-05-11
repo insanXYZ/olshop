@@ -43,7 +43,7 @@ func (controller *UserController) Login(c echo.Context) error {
 	c.SetCookie(cookie)
 
 	return c.JSON(200, model.WebResponse{
-		Data:    converter.UserToToken(token),
+		Data:    converter.UserToResponseToken(token),
 		Message: "success login",
 	})
 }
@@ -74,7 +74,7 @@ func (controller *UserController) Refresh(c echo.Context) error {
 		return httpresponse.Error(c, err.Error())
 	}
 
-	return httpresponse.Success(c, "success refresh", converter.UserToToken(token))
+	return httpresponse.Success(c, "success refresh", converter.UserToResponseToken(token))
 }
 
 func (controller *UserController) Get(c echo.Context) error {

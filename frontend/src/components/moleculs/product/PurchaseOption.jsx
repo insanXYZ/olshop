@@ -12,7 +12,7 @@ export default ({ data, onLiked }) => {
 
   const handleLike = () => {
     request
-      .post("/api/products/liked", {
+      .post("/api/products/like", {
         product_id: data.id,
       })
       .then((res) => {
@@ -25,7 +25,7 @@ export default ({ data, onLiked }) => {
   };
 
   return (
-    <div className="w-4/6">
+    <div className="w-1/5">
       <div className="w-full flex flex-col gap-5 px-3 py-5 bg-dark-neutral rounded-xl">
         <div className="flex gap-5 items-center">
           <Counter

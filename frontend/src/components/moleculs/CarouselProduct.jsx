@@ -3,7 +3,7 @@ import Carousel from "../atoms/Carousel";
 export default ({
   images,
   className = "w-full",
-  source = "path",
+  source = "url",
   thumbs = false,
 }) => {
   return (

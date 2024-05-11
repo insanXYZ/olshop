@@ -9,7 +9,7 @@ export default ({ product }) => {
       className="flex w-[250px] h-full flex-col bg-dark-neutral rounded-lg gap-1 justify-between p-5"
     >
       <div className="h-full w-full flex flex-col gap-1">
-        <CarouselProduct images={product.images} source="path" />
+        <CarouselProduct images={product.images} source="url" />
         <div className="line-clamp-2">{product.name}</div>
       </div>
       <span className="font-outfit-b text-end text-lg line-clamp-1">

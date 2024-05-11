@@ -14,6 +14,7 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -24,9 +25,10 @@ type ProductService struct {
 	ProductRepository      *repository.ProductRepository
 	UserRepository         *repository.UserRepository
 	ImageProductRepository *repository.ImageProductRepository
+	UserCartedRepository   *repository.UserCartedProductRepository
 }
 
-func NewProductService(db *gorm.DB, log *logrus.Logger, validate *validator.Validate, productRepository *repository.ProductRepository, userRepository *repository.UserRepository, imageProductRepository *repository.ImageProductRepository) *ProductService {
+func NewProductService(db *gorm.DB, log *logrus.Logger, validate *validator.Validate, productRepository *repository.ProductRepository, userRepository *repository.UserRepository, imageProductRepository *repository.ImageProductRepository, cartedProductRepository *repository.UserCartedProductRepository) *ProductService {
 	return &ProductService{
 		DB:                     db,
 		Log:                    log,
@@ -34,22 +36,23 @@ func NewProductService(db *gorm.DB, log *logrus.Logger, validate *validator.Vali
 		ProductRepository:      productRepository,
 		UserRepository:         userRepository,
 		ImageProductRepository: imageProductRepository,
+		UserCartedRepository:   cartedProductRepository,
 	}
 }
 
-func (service *ProductService) GetAll() ([]model.ProductResponse, error) {
+func (service *ProductService) GetAll() ([]*model.ProductResponse, error) {
 	var products []entity.Product
 	err := service.ProductRepository.GetAllWithManyRelations(&products, service.DB)
 	if err != nil {
 		return nil, err
 	}
 
-	response := make([]model.ProductResponse, len(products))
+	res := make([]*model.ProductResponse, len(products))
 	for i, product := range products {
-		response[i] = *converter.ProductsToResponseGetAll(&product)
+		res[i] = converter.ProductToResponse(&product)
 	}
 
-	return response, nil
+	return res, nil
 }
 
 func (service *ProductService) GetDetails(claims interface{}, req *model.GetDetailsProduct) (*model.ProductResponse, error) {
@@ -62,10 +65,10 @@ func (service *ProductService) GetDetails(claims interface{}, req *model.GetDeta
 	}
 
 	if ok {
-		return converter.ProductToResponseGetDetails(product, cl["sub"].(string)), nil
+		return converter.ProductToResponseWithLiked(product, cl["sub"].(string)), nil
 	}
 
-	return converter.ProductToResponseGetDetails(product), nil
+	return converter.ProductToResponseWithLiked(product), nil
 
 }
 
@@ -180,5 +183,40 @@ func (service *ProductService) Create(req *model.CreateProduct, images []*multip
 	})
 
 	return err
+
+}
+
+func (service *ProductService) Carted(claims jwt.MapClaims, req *model.CartedProduct) error {
+	err := service.Validate.Struct(req)
+	if err != nil {
+		return err
+	}
+
+	user := new(entity.User)
+	err = service.UserRepository.TakeById(service.DB, user, claims["sub"].(string))
+	if err != nil {
+		return err
+	}
+
+	product := new(entity.Product)
+	err = service.ProductRepository.TakeById(service.DB, product, req.ProductID)
+	if err != nil {
+		return err
+	}
+
+	atoi, _ := strconv.Atoi(req.Qty)
+
+	userCartedProduct := &entity.UserCartedProduct{
+		Qty:       atoi,
+		UserID:    user.ID,
+		ProductID: product.ID,
+	}
+
+	err = service.UserCartedRepository.Create(service.DB, userCartedProduct)
+	if err != nil {
+		return err
+	}
+
+	return nil
 
 }

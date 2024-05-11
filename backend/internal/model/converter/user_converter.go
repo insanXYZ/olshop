@@ -5,18 +5,22 @@ import (
 	"backend/internal/model"
 )
 
-func UserToToken(token string) *model.UserResponse {
-	return &model.UserResponse{
-		Token: token,
+func UserToResponse(user *entity.User) *model.UserResponse {
+	if user == nil {
+		return nil
 	}
-}
 
-func UserToGetDetail(user *entity.User) *model.UserResponse {
 	return &model.UserResponse{
 		ID:    user.ID,
 		Role:  user.Role,
 		Name:  user.Name,
 		Image: "http://localhost:1323/storage/user/" + user.Image,
 		Email: user.Email,
+	}
+}
+
+func UserToResponseToken(token string) *model.UserResponse {
+	return &model.UserResponse{
+		Token: token,
 	}
 }

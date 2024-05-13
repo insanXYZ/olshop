@@ -195,17 +195,22 @@ func (service *UserService) UpdatePassword(claims jwt.MapClaims, req *model.Upda
 	return err
 }
 
-func (service *UserService) GetLikedProduct(claims jwt.MapClaims) (*model.UserResponse, error) {
+func (service *UserService) GetLikedProduct(claims jwt.MapClaims) ([]*model.ProductResponse, error) {
 	user := new(entity.User)
 	err := service.UserRepository.TakeById(service.DB, user, claims["sub"].(string))
 	if err != nil {
 		return nil, err
 	}
-
-	err = service.UserRepository.TakePreloadLikeProduct(service.DB, user)
+	var products []*entity.Product
+	err = service.UserRepository.TakeAssociationLikeProduct(service.DB, user, &products)
 	if err != nil {
 		return nil, err
 	}
 
-	return converter.UserToLikedProduct(user), nil
+	res := make([]*model.ProductResponse, len(products))
+	for i, product := range products {
+		res[i] = converter.ProductToResponse(product)
+	}
+
+	return res, nil
 }

@@ -36,7 +36,7 @@ func (c *RouteConfig) SetupAuthRoute(api *echo.Group) {
 
 	api.Use(c.Middleware.Jwt())
 	api.GET("/users", c.UserController.Get)
-	api.GET("/users/product/like", c.UserController.GetLikedProduct)
+	api.GET("/users/products/like", c.UserController.GetLikedProduct)
 	api.PATCH("/users", c.UserController.UpdateUser)
 	api.PATCH("/users/password", c.UserController.UpdatePassword)
 	api.POST("/categories", c.CategoryController.Create)

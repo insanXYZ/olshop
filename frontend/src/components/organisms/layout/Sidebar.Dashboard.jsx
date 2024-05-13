@@ -21,16 +21,16 @@ export default () => {
         <Accordion
           title={setTitle()}
           className={`${
-            removeSlash(window.location.pathname) == "/account" ||
-            removeSlash(window.location.pathname) == "/account/password"
+            removeSlash(window.location.pathname) == "/user" ||
+            removeSlash(window.location.pathname) == "/user/password"
               ? "bg-red-500"
               : "bg-base-100"
           } flex items-center gap-4 transition-all text-stone-300 group-hover:text-white`}
         >
-          <Link to={"/account"}>
+          <Link to={"/user"}>
             <span className="text-lg">identity</span>
           </Link>
-          <Link to={"/account/password"}>
+          <Link to={"/user/password"}>
             <span className="text-lg">password</span>
           </Link>
         </Accordion>

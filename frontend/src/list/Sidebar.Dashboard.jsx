@@ -12,17 +12,12 @@ const list = [
   {
     title: "Liked",
     icon: <CiHeart className="text-3xl" />,
-    to: "/product/liked",
+    to: "/user/product/like",
   },
   {
     title: "Cart",
     icon: <CiShoppingCart className="text-3xl" />,
-    to: "/discount",
-  },
-  {
-    title: "Notification",
-    icon: <CiBellOn className="text-3xl" />,
-    to: "/notification",
+    to: "/user/product/cart",
   },
 ];
 
@@ -30,17 +25,17 @@ const adminList = [
   {
     title: "Dashboard",
     icon: <CiViewTimeline className="text-3xl" />,
-    to: "/dashboard",
+    to: "/admin",
   },
   {
     title: "Product",
     icon: <CiBoxes className="text-3xl" />,
-    to: "/products",
+    to: "/admin/product",
   },
   {
     title: "Category",
     icon: <BiCategoryAlt className="text-3xl" />,
-    to: "/categories",
+    to: "/admin/category",
   },
 ];
 

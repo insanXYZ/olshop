@@ -6,7 +6,7 @@ export default ({ children }) => {
     <Base>
       <div className="flex w-full h-full gap-5">
         <Sidebar />
-        <div className="w-full h-full ">{children}</div>
+        <div className="w-full h-full">{children}</div>
       </div>
     </Base>
   );

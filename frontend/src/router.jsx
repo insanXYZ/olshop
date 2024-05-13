@@ -8,6 +8,7 @@ import Password from "./pages/Password";
 import Category from "./pages/admin/Category";
 import ProductAdmin from "./pages/admin/Product";
 import Product from "./pages/Product";
+import Liked from "./pages/member/productsliked";
 
 import IsGuess from "./middlewares/IsGuess";
 import IsAuth from "./middlewares/IsAuth";
@@ -35,7 +36,7 @@ export default createBrowserRouter([
     ),
   },
   {
-    path: "/account",
+    path: "/user",
     element: (
       <IsAuth>
         <Account />
@@ -43,7 +44,7 @@ export default createBrowserRouter([
     ),
   },
   {
-    path: "/account/password",
+    path: "/user/password",
     element: (
       <IsAuth>
         <Password />
@@ -51,7 +52,7 @@ export default createBrowserRouter([
     ),
   },
   {
-    path: "/categories",
+    path: "/admin/category",
     element: (
       <IsAuth>
         <IsAdmin>
@@ -61,7 +62,7 @@ export default createBrowserRouter([
     ),
   },
   {
-    path: "/products",
+    path: "/admin/product",
     element: (
       <IsAuth>
         <IsAdmin>
@@ -71,7 +72,15 @@ export default createBrowserRouter([
     ),
   },
   {
-    path: "/products/:id",
+    path: "/user/product/like",
+    element: (
+      <IsAuth>
+        <Liked />
+      </IsAuth>
+    ),
+  },
+  {
+    path: "/product/:id",
     element: <Product />,
   },
 ]);

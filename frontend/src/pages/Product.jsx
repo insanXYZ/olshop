@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import Header from "../components/organisms/product/Header";
 import { useEffect, useState } from "react";
 import request from "../utils/request/request";
+import Modal from "../components/atoms/Modal";
 
 export default () => {
   const { id } = useParams();
@@ -26,8 +27,10 @@ export default () => {
   const handleSetCart = () => {};
 
   return (
-    <Main loading={product.length == 0}>
-      <Header data={product} />
-    </Main>
+    <>
+      <Main loading={product.length == 0}>
+        <Header data={product} />
+      </Main>
+    </>
   );
 };

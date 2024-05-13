@@ -1,14 +1,15 @@
 package model
 
 type UserResponse struct {
-	ID           string             `json:"id,omitempty"`
-	Role         string             `json:"role,omitempty"`
-	Name         string             `json:"name,omitempty"`
-	Image        string             `json:"image,omitempty"`
-	Email        string             `json:"email,omitempty"`
-	Token        string             `json:"token,omitempty"`
-	CreatedAt    any                `json:"created_at,omitempty"`
-	LikeProducts []*ProductResponse `json:"like_products,omitempty"`
+	ID            string                       `json:"id,omitempty"`
+	Role          string                       `json:"role,omitempty"`
+	Name          string                       `json:"name,omitempty"`
+	Image         string                       `json:"image,omitempty"`
+	Email         string                       `json:"email,omitempty"`
+	Token         string                       `json:"token,omitempty"`
+	CreatedAt     any                          `json:"created_at,omitempty"`
+	LikeProducts  []*ProductResponse           `json:"like_products,omitempty"`
+	CartedProduct []*UserCartedProductResponse `json:"carted_product,omitempty"`
 }
 
 type LoginRequest struct {

@@ -6,17 +6,20 @@ import (
 	"slices"
 )
 
-func ProductToResponse(product *entity.Product) *model.ProductResponse {
+func ProductToResponse(product *entity.Product, idUser ...string) *model.ProductResponse {
 
 	if product == nil {
 		return nil
 	}
 
 	imageProduct := make([]*model.ImageProductResponse, len(product.ImageProducts))
-	if len(product.ImageProducts) > 0 {
-		for i, image := range product.ImageProducts {
-			imageProduct[i] = ImageProductToResponse(image)
-		}
+	for i, image := range product.ImageProducts {
+		imageProduct[i] = ImageProductToResponse(image)
+	}
+
+	cartedByUser := make([]*model.UserCartedProductResponse, len(product.CartedProductByUser))
+	for i, p := range product.CartedProductByUser {
+		cartedByUser[i] = UserCartedProductToResponse(p)
 	}
 
 	return &model.ProductResponse{
@@ -29,20 +32,13 @@ func ProductToResponse(product *entity.Product) *model.ProductResponse {
 		Category:      CategoryToResponse(product.Category),
 		ImageProducts: imageProduct,
 		LikedCount:    len(product.LikedByUsers),
+		Liked: func(p []*entity.User) bool {
+			if len(idUser) == 1 {
+				return slices.ContainsFunc(p, func(user *entity.User) bool {
+					return user.ID == idUser[0]
+				})
+			}
+			return false
+		}(product.LikedByUsers),
 	}
-}
-
-func ProductToResponseWithLiked(product *entity.Product, id ...string) *model.ProductResponse {
-	res := ProductToResponse(product)
-	res.Liked = func(p []*entity.User) bool {
-		if len(id) == 1 {
-			return slices.ContainsFunc(p, func(user *entity.User) bool {
-				return user.ID == id[0]
-			})
-		}
-		return false
-	}(product.LikedByUsers)
-	res.LikedCount = len(product.LikedByUsers)
-
-	return res
 }

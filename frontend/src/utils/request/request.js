@@ -35,6 +35,7 @@ request.interceptors.response.use(
         Cookies.set("token", res.data.data.token);
         return request(originalRequest);
       } catch (error) {
+        window.location.href = "/login";
         Cookies.remove("token");
       }
     }

@@ -2,11 +2,13 @@ import Counter from "../Counter";
 import Button from "../../atoms/Button";
 import toRupiah from "@develoka/angka-rupiah-js";
 import { useState } from "react";
-import { CiBellOn, CiHeart, CiShoppingCart } from "react-icons/ci";
+import { CiHeart, CiShoppingCart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import request from "../../../utils/request/request";
+import { PiShoppingCartSimpleThin } from "react-icons/pi";
+import { ToastContainer, toast } from "react-toastify";
 
-export default ({ data, onLiked }) => {
+export default ({ data }) => {
   const [qty, setQty] = useState(1);
   const [liked, setLiked] = useState(data.liked);
 
@@ -17,10 +19,24 @@ export default ({ data, onLiked }) => {
       })
       .then((res) => {
         setLiked(!liked);
-        console.log(res.data);
+        toast.success(res.data.message);
       })
       .catch((err) => {
-        console.log(err);
+        toast.success(res.data.message);
+      });
+  };
+
+  const handleCarted = () => {
+    request
+      .post("/api/products/cart", {
+        product_id: data.id,
+        qty: qty,
+      })
+      .then((res) => {
+        toast.success(res.data.message);
+      })
+      .catch((err) => {
+        toast.error(res.data.message);
       });
   };
 
@@ -48,15 +64,23 @@ export default ({ data, onLiked }) => {
             className="flex items-center gap-2 bg-red-500"
           >
             {liked ? (
-              <FaHeart className="text-2xl text-white" />
+              <>
+                <FaHeart className="text-2xl text-white" />
+                <span>Unliked</span>
+              </>
             ) : (
-              <CiHeart className="text-2xl" />
+              <>
+                <CiHeart className="text-2xl" />
+                <span>Liked</span>
+              </>
             )}
-            <span>Liked</span>
           </Button>
-          <Button className="flex items-center gap-2 bg-red-500">
-            <CiShoppingCart className="text-2xl" />
-            <span>Cart</span>
+          <Button
+            onClick={handleCarted}
+            className="flex items-center gap-2 bg-red-500"
+          >
+            <PiShoppingCartSimpleThin className="text-2xl" />
+            <span>Add to cart</span>
           </Button>
           <Button className="flex items-center gap-5 bg-base-100 border-2 border-red-500">
             Buy

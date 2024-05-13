@@ -24,3 +24,15 @@ func UserToResponseToken(token string) *model.UserResponse {
 		Token: token,
 	}
 }
+
+func UserToLikedProduct(user *entity.User) *model.UserResponse {
+
+	sp := make([]*model.ProductResponse, len(user.LikeProducts))
+	for i, prd := range user.LikeProducts {
+		sp[i] = ProductToResponse(prd)
+	}
+
+	return &model.UserResponse{
+		LikeProducts: sp,
+	}
+}

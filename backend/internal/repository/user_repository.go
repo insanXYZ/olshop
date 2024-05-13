@@ -27,3 +27,8 @@ func (repo *UserRepository) CountByEmail(db *gorm.DB, user *entity.User, email s
 	db.Model(user).Where("email = ?", email).Count(&count)
 	return int(count)
 }
+
+func (repo *UserRepository) TakePreloadLikeProduct(db *gorm.DB, user *entity.User) error {
+	err := db.Preload("LikeProducts").Take(user, "id = ?", user.ID).Error
+	return err
+}

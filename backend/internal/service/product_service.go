@@ -14,7 +14,6 @@ import (
 	"io"
 	"mime/multipart"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -65,10 +64,10 @@ func (service *ProductService) GetDetails(claims interface{}, req *model.GetDeta
 	}
 
 	if ok {
-		return converter.ProductToResponseWithLiked(product, cl["sub"].(string)), nil
+		return converter.ProductToResponse(product, cl["sub"].(string)), nil
 	}
 
-	return converter.ProductToResponseWithLiked(product), nil
+	return converter.ProductToResponse(product), nil
 
 }
 
@@ -204,10 +203,8 @@ func (service *ProductService) Carted(claims jwt.MapClaims, req *model.CartedPro
 		return err
 	}
 
-	atoi, _ := strconv.Atoi(req.Qty)
-
 	userCartedProduct := &entity.UserCartedProduct{
-		Qty:       atoi,
+		Qty:       req.Qty,
 		UserID:    user.ID,
 		ProductID: product.ID,
 	}

@@ -118,3 +118,13 @@ func (controller *UserController) UpdatePassword(c echo.Context) error {
 
 	return httpresponse.Success(c, "success update password", nil)
 }
+
+func (controller *UserController) GetLikedProduct(c echo.Context) error {
+	claims := c.Get("user").(jwt.MapClaims)
+	product, err := controller.UserService.GetLikedProduct(claims)
+	if err != nil {
+		return err
+	}
+
+	return httpresponse.Success(c, "success get all liked product", product)
+}

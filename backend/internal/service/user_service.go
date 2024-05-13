@@ -194,3 +194,18 @@ func (service *UserService) UpdatePassword(claims jwt.MapClaims, req *model.Upda
 	err = service.UserRepository.UpdateById(service.DB, req, user.ID)
 	return err
 }
+
+func (service *UserService) GetLikedProduct(claims jwt.MapClaims) (*model.UserResponse, error) {
+	user := new(entity.User)
+	err := service.UserRepository.TakeById(service.DB, user, claims["sub"].(string))
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.UserRepository.TakePreloadLikeProduct(service.DB, user)
+	if err != nil {
+		return nil, err
+	}
+
+	return converter.UserToLikedProduct(user), nil
+}

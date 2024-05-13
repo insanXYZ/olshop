@@ -5,7 +5,7 @@ import CarouselProduct from "../CarouselProduct";
 export default ({ product }) => {
   return (
     <Link
-      to={"/products/" + product.id}
+      to={"/product/" + product.id}
       className="flex w-[250px] h-full flex-col bg-dark-neutral rounded-lg gap-1 justify-between p-5"
     >
       <div className="h-full w-full flex flex-col gap-1">

@@ -5,12 +5,12 @@ import (
 )
 
 type ProductResponse struct {
-	ID            string                       `json:"id"`
-	Name          string                       `json:"name"`
-	Price         string                       `json:"price"`
-	Qty           string                       `json:"qty"`
-	Description   string                       `json:"description"`
-	CreatedAt     time.Time                    `json:"created_at"`
+	ID            string                       `json:"id,omitempty"`
+	Name          string                       `json:"name,omitempty"`
+	Price         string                       `json:"price,omitempty"`
+	Qty           string                       `json:"qty,omitempty"`
+	Description   string                       `json:"description,omitempty"`
+	CreatedAt     time.Time                    `json:"created_at,omitempty"`
 	Category      *CategoryResponse            `json:"category,omitempty"`
 	ImageProducts []*ImageProductResponse      `json:"images,omitempty"`
 	LikedByUsers  []*UserResponse              `json:"liked_by_users,omitempty"`

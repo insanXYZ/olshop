@@ -9,6 +9,7 @@ import Category from "./pages/admin/Category";
 import ProductAdmin from "./pages/admin/Product";
 import Product from "./pages/Product";
 import Liked from "./pages/member/productsliked";
+import Carted from "./pages/member/productscarted";
 
 import IsGuess from "./middlewares/IsGuess";
 import IsAuth from "./middlewares/IsAuth";
@@ -76,6 +77,14 @@ export default createBrowserRouter([
     element: (
       <IsAuth>
         <Liked />
+      </IsAuth>
+    ),
+  },
+  {
+    path: "/user/product/cart",
+    element: (
+      <IsAuth>
+        <Carted />
       </IsAuth>
     ),
   },

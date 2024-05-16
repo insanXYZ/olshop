@@ -35,23 +35,26 @@ func Bootstrap(config *BootstrapConfig) {
 	categoryService := service.NewCategoryService(config.DB, config.Log, config.Validate, categoryRepository)
 	imageProductService := service.NewImageProductService(config.DB, config.Log, config.Validate, imageProductRepository)
 	productService := service.NewProductService(config.DB, config.Log, config.Validate, productRepository, userRepository, imageProductRepository, userCartedProductRepository)
+	userCartedProductService := service.NewUserCartedProductService(config.DB, config.Log, config.Validate, productRepository, userRepository, userCartedProductRepository)
 
 	//setup controller
 	userController := http.NewUserController(userService, config.Log)
 	categoryController := http.NewCategoryController(categoryService, config.Log)
 	imageProductController := http.NewImageProductController(imageProductService, config.Log)
 	productController := http.NewProductController(productService, config.Log)
+	userCartedProductController := http.NewUserCartedProductController(userCartedProductService, config.Log)
 
 	//setup middleware
 	guard := middleware.NewMiddlewareConfig(config.ViperConfig)
 
 	routeConfig := route.RouteConfig{
-		App:                    config.App,
-		UserController:         userController,
-		ProductController:      productController,
-		CategoryController:     categoryController,
-		ImageProductController: imageProductController,
-		Middleware:             guard,
+		App:                         config.App,
+		UserController:              userController,
+		ProductController:           productController,
+		CategoryController:          categoryController,
+		ImageProductController:      imageProductController,
+		UserCartedProductController: userCartedProductController,
+		Middleware:                  guard,
 	}
 
 	routeConfig.Setup()

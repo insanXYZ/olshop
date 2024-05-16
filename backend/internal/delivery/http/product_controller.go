@@ -105,20 +105,3 @@ func (controller *ProductController) Liked(c echo.Context) error {
 
 	return httpresponse.Success(c, message, nil)
 }
-
-func (controller *ProductController) Carted(c echo.Context) error {
-	claims := c.Get("user").(jwt.MapClaims)
-	req := new(model.CartedProduct)
-	err := c.Bind(req)
-	if err != nil {
-		return httpresponse.Error(c, err.Error())
-	}
-
-	err = controller.ProductService.Carted(claims, req)
-	if err != nil {
-		return httpresponse.Error(c, err.Error())
-	}
-
-	return httpresponse.Success(c, "success insert product to cart", nil)
-
-}

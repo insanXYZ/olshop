@@ -128,3 +128,13 @@ func (controller *UserController) GetLikedProduct(c echo.Context) error {
 
 	return httpresponse.Success(c, "success get all liked product", product)
 }
+
+func (controller *UserController) GetCartedProduct(c echo.Context) error {
+	claims := c.Get("user").(jwt.MapClaims)
+	products, err := controller.UserService.GetCartedProduct(claims)
+	if err != nil {
+		return err
+	}
+
+	return httpresponse.Success(c, "success get all product carted", products)
+}

@@ -202,7 +202,7 @@ func (service *UserService) GetLikedProduct(claims jwt.MapClaims) ([]*model.Prod
 		return nil, err
 	}
 	var products []*entity.Product
-	err = service.UserRepository.TakeAssociationLikeProduct(service.DB, user, &products)
+	err = service.UserRepository.FindAssociationLikeProduct(service.DB, user, &products)
 	if err != nil {
 		return nil, err
 	}
@@ -210,6 +210,25 @@ func (service *UserService) GetLikedProduct(claims jwt.MapClaims) ([]*model.Prod
 	res := make([]*model.ProductResponse, len(products))
 	for i, product := range products {
 		res[i] = converter.ProductToResponse(product)
+	}
+
+	return res, nil
+}
+
+func (service *UserService) GetCartedProduct(claims jwt.MapClaims) ([]*model.UserCartedProductResponse, error) {
+	user := new(entity.User)
+	err := service.UserRepository.TakeById(service.DB, user, claims["sub"].(string))
+	if err != nil {
+		return nil, err
+	}
+	err = service.UserRepository.TakePreloadCartedProduct(service.DB, user)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make([]*model.UserCartedProductResponse, len(user.CartedProduct))
+	for i, product := range user.CartedProduct {
+		res[i] = converter.UserCartedProductToResponse(product)
 	}
 
 	return res, nil

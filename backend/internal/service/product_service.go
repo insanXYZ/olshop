@@ -102,7 +102,7 @@ func (service *ProductService) Liked(claims jwt.MapClaims, req *model.LikedProdu
 		return "", err
 	}
 
-	if count := service.ProductRepository.CountRelationLikedToUserByUserId(service.DB, product, user.ID); count == 0 {
+	if count := service.ProductRepository.CountRelationLikedByUserWithUserId(service.DB, product, user.ID); count == 0 {
 		err := service.ProductRepository.LikedProduct(service.DB, user, product)
 		if err != nil {
 			return "", err
@@ -182,38 +182,5 @@ func (service *ProductService) Create(req *model.CreateProduct, images []*multip
 	})
 
 	return err
-
-}
-
-func (service *ProductService) Carted(claims jwt.MapClaims, req *model.CartedProduct) error {
-	err := service.Validate.Struct(req)
-	if err != nil {
-		return err
-	}
-
-	user := new(entity.User)
-	err = service.UserRepository.TakeById(service.DB, user, claims["sub"].(string))
-	if err != nil {
-		return err
-	}
-
-	product := new(entity.Product)
-	err = service.ProductRepository.TakeById(service.DB, product, req.ProductID)
-	if err != nil {
-		return err
-	}
-
-	userCartedProduct := &entity.UserCartedProduct{
-		Qty:       req.Qty,
-		UserID:    user.ID,
-		ProductID: product.ID,
-	}
-
-	err = service.UserCartedRepository.Create(service.DB, userCartedProduct)
-	if err != nil {
-		return err
-	}
-
-	return nil
 
 }

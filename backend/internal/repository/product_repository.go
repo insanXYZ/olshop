@@ -27,7 +27,7 @@ func (repo *ProductRepository) GetByIdWithManyRelations(products *entity.Product
 	return err
 }
 
-func (repo *ProductRepository) CountRelationLikedToUserByUserId(db *gorm.DB, product *entity.Product, id any) int {
+func (repo *ProductRepository) CountRelationLikedByUserWithUserId(db *gorm.DB, product *entity.Product, id any) int {
 	count := db.Model(product).Where("users.id = ?", id).Association("LikedByUsers").Count()
 	return int(count)
 }

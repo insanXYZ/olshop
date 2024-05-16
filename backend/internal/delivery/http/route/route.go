@@ -7,12 +7,13 @@ import (
 )
 
 type RouteConfig struct {
-	App                    *echo.Echo
-	UserController         *http.UserController
-	ProductController      *http.ProductController
-	CategoryController     *http.CategoryController
-	ImageProductController *http.ImageProductController
-	Middleware             *middleware.MiddlewareConfig
+	App                         *echo.Echo
+	UserController              *http.UserController
+	ProductController           *http.ProductController
+	CategoryController          *http.CategoryController
+	ImageProductController      *http.ImageProductController
+	UserCartedProductController *http.UserCartedProductController
+	Middleware                  *middleware.MiddlewareConfig
 }
 
 func (c *RouteConfig) Setup() {
@@ -37,6 +38,7 @@ func (c *RouteConfig) SetupAuthRoute(api *echo.Group) {
 	api.Use(c.Middleware.Jwt())
 	api.GET("/users", c.UserController.Get)
 	api.GET("/users/products/like", c.UserController.GetLikedProduct)
+	api.GET("/users/products/cart", c.UserController.GetCartedProduct)
 	api.PATCH("/users", c.UserController.UpdateUser)
 	api.PATCH("/users/password", c.UserController.UpdatePassword)
 	api.POST("/categories", c.CategoryController.Create)
@@ -44,5 +46,5 @@ func (c *RouteConfig) SetupAuthRoute(api *echo.Group) {
 	api.POST("/products", c.ProductController.Create)
 	api.DELETE("/products/:id", c.ProductController.Delete)
 	api.POST("/products/like", c.ProductController.Liked)
-	api.POST("/products/cart", c.ProductController.Carted)
+	api.POST("/products/cart", c.UserCartedProductController.Carted)
 }

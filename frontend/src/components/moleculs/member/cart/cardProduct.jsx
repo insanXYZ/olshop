@@ -1,9 +1,14 @@
 import CarouselProduct from "../../CarouselProduct";
 import toRupiah from "@develoka/angka-rupiah-js";
 import Counter from "../../Counter";
-import { useEffect, useState } from "react";
+import { debounce } from "lodash";
+import request from "../../../../utils/request/request";
 
 export default ({ data }) => {
+  const handleChangeCounter = debounce((num) => {
+    console.log(num);
+  }, 1000);
+
   return (
     <tr className="relative">
       <th className="flex items-center gap-5">

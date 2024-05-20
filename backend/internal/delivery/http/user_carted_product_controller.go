@@ -37,3 +37,18 @@ func (controller *UserCartedProductController) Carted(c echo.Context) error {
 	return httpresponse.Success(c, "success insert product to cart", nil)
 
 }
+
+func (controller *UserCartedProductController) Update(c echo.Context) error {
+	claims := c.Get("user").(jwt.MapClaims)
+	req := new(model.UpdateCart)
+	err := c.Bind(req)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+	err = controller.UserCartedProductService.Update(claims, req)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+
+	return httpresponse.Success(c, "success update product to cart", nil)
+}

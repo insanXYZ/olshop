@@ -1,0 +1,1 @@
+drop table detail_orders;

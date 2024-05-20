@@ -1,9 +1,9 @@
 create table products
 (
     id varchar(100) primary key not null ,
-    name varchar(100) not null,
-    price varchar(100) not null,
-    qty varchar(100) not null,
+    name varchar(255) not null,
+    price int not null,
+    qty int not null,
     description text not null ,
     category_id varchar(100) not null ,
     created_at timestamp default current_timestamp,

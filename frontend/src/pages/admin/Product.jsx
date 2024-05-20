@@ -73,8 +73,8 @@ export default () => {
         "/api/products",
         {
           name: name,
-          price: price,
-          qty: qty,
+          price: Number(price),
+          qty: Number(qty),
           description: description,
           category_id: category,
           images: images.file,

@@ -9,7 +9,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type UserCartedProductService struct {
@@ -59,20 +58,38 @@ func (service *UserCartedProductService) Carted(claims jwt.MapClaims, req *model
 		userCartedProduct.Qty = req.Qty
 		err = service.UserCartedRepository.Create(service.DB, userCartedProduct)
 		return err
-	} else {
-		err := service.UserCartedRepository.Take(service.DB, userCartedProduct)
-		if err != nil {
-			return err
-		}
-		atoi, _ := strconv.Atoi(product.Qty)
-		if (userCartedProduct.Qty + req.Qty) > atoi {
-			return errors.New("quantity exceeds limit")
-		}
-		userCartedProduct.Qty += req.Qty
-		err = service.UserCartedRepository.Save(service.DB, userCartedProduct)
+	}
+	err = service.UserCartedRepository.Take(service.DB, userCartedProduct)
+	if err != nil {
+		return err
+	}
+	if (userCartedProduct.Qty + req.Qty) > product.Qty {
+		return errors.New("quantity exceeds limit")
+	}
+	userCartedProduct.Qty += req.Qty
+	err = service.UserCartedRepository.Save(service.DB, userCartedProduct)
+	return err
+
+}
+
+func (service *UserCartedProductService) Update(claims jwt.MapClaims, req *model.UpdateCart) error {
+	err := service.Validate.Struct(req)
+	if err != nil {
+		return err
+	}
+	ent := &entity.UserCartedProduct{
+		ID:     req.ID,
+		UserID: claims["sub"].(string),
+	}
+	err = service.UserCartedRepository.Take(service.DB, ent)
+	if err != nil {
 		return err
 	}
 
+	ent.Qty = req.Qty
+	err = service.UserCartedRepository.Save(service.DB, ent)
+	if err != nil {
+		return err
+	}
 	return nil
-
 }

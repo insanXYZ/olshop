@@ -9,3 +9,8 @@ type UserCartedProductResponse struct {
 	User      *UserResponse    `json:"user,omitempty"`
 	Product   *ProductResponse `json:"product,omitempty"`
 }
+
+type UpdateCart struct {
+	ID  int `param:"id" validate:"required"`
+	Qty int `json:"qty" form:"qty" validate:"required"`
+}

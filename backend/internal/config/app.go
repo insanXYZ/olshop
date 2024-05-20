@@ -29,6 +29,8 @@ func Bootstrap(config *BootstrapConfig) {
 	imageProductRepository := repository.NewImageProductRepository(config.Log)
 	productRepository := repository.NewProductRepository(config.Log)
 	userCartedProductRepository := repository.NewUserCartedProductRepository(config.Log)
+	orderRepository := repository.NewOrderRepository(config.Log)
+	detailOrderRepository := repository.NewDetailOrderRepository(config.Log)
 
 	//setup services
 	userService := service.NewUserService(config.DB, config.Log, config.Validate, userRepository, config.ViperConfig)
@@ -36,6 +38,7 @@ func Bootstrap(config *BootstrapConfig) {
 	imageProductService := service.NewImageProductService(config.DB, config.Log, config.Validate, imageProductRepository)
 	productService := service.NewProductService(config.DB, config.Log, config.Validate, productRepository, userRepository, imageProductRepository, userCartedProductRepository)
 	userCartedProductService := service.NewUserCartedProductService(config.DB, config.Log, config.Validate, productRepository, userRepository, userCartedProductRepository)
+	orderService := service.NewOrderService(config.DB, config.Log, config.Validate, config.ViperConfig, orderRepository, detailOrderRepository, productRepository, userRepository)
 
 	//setup controller
 	userController := http.NewUserController(userService, config.Log)
@@ -43,6 +46,7 @@ func Bootstrap(config *BootstrapConfig) {
 	imageProductController := http.NewImageProductController(imageProductService, config.Log)
 	productController := http.NewProductController(productService, config.Log)
 	userCartedProductController := http.NewUserCartedProductController(userCartedProductService, config.Log)
+	orderController := http.NewOrderController(config.Log, orderService)
 
 	//setup middleware
 	guard := middleware.NewMiddlewareConfig(config.ViperConfig)
@@ -54,6 +58,7 @@ func Bootstrap(config *BootstrapConfig) {
 		CategoryController:          categoryController,
 		ImageProductController:      imageProductController,
 		UserCartedProductController: userCartedProductController,
+		OrderController:             orderController,
 		Middleware:                  guard,
 	}
 

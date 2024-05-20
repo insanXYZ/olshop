@@ -13,6 +13,7 @@ type RouteConfig struct {
 	CategoryController          *http.CategoryController
 	ImageProductController      *http.ImageProductController
 	UserCartedProductController *http.UserCartedProductController
+	OrderController             *http.OrderController
 	Middleware                  *middleware.MiddlewareConfig
 }
 
@@ -37,14 +38,16 @@ func (c *RouteConfig) SetupAuthRoute(api *echo.Group) {
 
 	api.Use(c.Middleware.Jwt())
 	api.GET("/users", c.UserController.Get)
-	api.GET("/users/products/like", c.UserController.GetLikedProduct)
-	api.GET("/users/products/cart", c.UserController.GetCartedProduct)
+	api.GET("/users/products/like", c.UserController.GetLikedProduct, c.Middleware.Member)
+	api.GET("/users/products/carts", c.UserController.GetCartedProduct, c.Middleware.Member)
 	api.PATCH("/users", c.UserController.UpdateUser)
 	api.PATCH("/users/password", c.UserController.UpdatePassword)
-	api.POST("/categories", c.CategoryController.Create)
-	api.DELETE("/categories/:id", c.CategoryController.Delete)
-	api.POST("/products", c.ProductController.Create)
-	api.DELETE("/products/:id", c.ProductController.Delete)
-	api.POST("/products/like", c.ProductController.Liked)
-	api.POST("/products/cart", c.UserCartedProductController.Carted)
+	api.POST("/categories", c.CategoryController.Create, c.Middleware.Admin)
+	api.DELETE("/categories/:id", c.CategoryController.Delete, c.Middleware.Admin)
+	api.POST("/products", c.ProductController.Create, c.Middleware.Admin)
+	api.DELETE("/products/:id", c.ProductController.Delete, c.Middleware.Admin)
+	api.POST("/products/like", c.ProductController.Liked, c.Middleware.Member)
+	api.POST("/carts", c.UserCartedProductController.Carted, c.Middleware.Member)
+	api.PATCH("/carts/:id", c.UserCartedProductController.Update, c.Middleware.Member)
+	api.POST("/orders", c.OrderController.Create, c.Middleware.Member)
 }

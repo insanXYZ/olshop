@@ -7,8 +7,8 @@ import (
 type ProductResponse struct {
 	ID            string                       `json:"id,omitempty"`
 	Name          string                       `json:"name,omitempty"`
-	Price         string                       `json:"price,omitempty"`
-	Qty           string                       `json:"qty,omitempty"`
+	Price         int                          `json:"price,omitempty"`
+	Qty           int                          `json:"qty,omitempty"`
 	Description   string                       `json:"description,omitempty"`
 	CreatedAt     time.Time                    `json:"created_at,omitempty"`
 	Category      *CategoryResponse            `json:"category,omitempty"`
@@ -33,8 +33,8 @@ type LikedProduct struct {
 
 type CreateProduct struct {
 	Name        string `json:"name" form:"name" validate:"required,min=3"`
-	Price       string `json:"price" form:"price" validate:"required"`
-	Qty         string `json:"qty" form:"qty" validate:"required"`
+	Price       int    `json:"price" form:"price" validate:"required"`
+	Qty         int    `json:"qty" form:"qty" validate:"required"`
 	Description string `json:"description" form:"description" validate:"required"`
 	CategoryID  string `json:"category_id" form:"category_id" validate:"required"`
 }

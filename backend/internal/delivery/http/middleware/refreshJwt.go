@@ -36,6 +36,7 @@ func (config *MiddlewareConfig) Refresh(next echo.HandlerFunc) echo.HandlerFunc 
 			if int64(claims["exp"].(float64)) <= time.Now().Unix() {
 				c.Set("user", jwt.MapClaims{
 					"sub":  claims["sub"],
+					"role": claims["role"],
 					"name": claims["name"],
 				})
 				return next(c)

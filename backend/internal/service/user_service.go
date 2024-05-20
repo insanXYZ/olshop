@@ -58,6 +58,7 @@ func (service *UserService) Login(request *model.LoginRequest) (string, error) {
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":  user.ID,
 		"name": user.Name,
+		"role": user.Role,
 		"exp":  time.Now().Add(time.Duration(service.viper.GetInt("EXP_JWT")) * time.Minute).Unix(),
 	})
 
@@ -99,6 +100,7 @@ func (service *UserService) Refresh(claims jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":  claims["sub"],
 		"name": claims["name"],
+		"role": claims["role"],
 		"exp":  time.Now().Add(time.Duration(service.viper.GetInt("EXP_JWT")) * time.Minute).Unix(),
 	})
 

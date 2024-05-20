@@ -8,7 +8,7 @@ import request from "../../../utils/request/request";
 import { PiShoppingCartSimpleThin } from "react-icons/pi";
 import { ToastContainer, toast } from "react-toastify";
 
-export default ({ data }) => {
+export default ({ data, handleCheckout }) => {
   const [qty, setQty] = useState(1);
   const [liked, setLiked] = useState(data.liked);
 
@@ -28,7 +28,7 @@ export default ({ data }) => {
 
   const handleCarted = () => {
     request
-      .post("/api/products/cart", {
+      .post("/api/carts", {
         product_id: data.id,
         qty: qty,
       })
@@ -82,7 +82,10 @@ export default ({ data }) => {
             <PiShoppingCartSimpleThin className="text-2xl" />
             <span>Add to cart</span>
           </Button>
-          <Button className="flex items-center gap-5 bg-base-100 border-2 border-red-500">
+          <Button
+            onClick={() => handleCheckout(qty)}
+            className="flex items-center gap-5 bg-base-100 border-2 border-red-500"
+          >
             Buy
           </Button>
         </div>

@@ -2,7 +2,7 @@ import CarouselProduct from "../../moleculs/CarouselProduct";
 import Title from "../../moleculs/product/Title";
 import PurchaseOption from "../../moleculs/product/PurchaseOption";
 
-export default ({ data }) => {
+export default ({ data, handleCheckout }) => {
   return (
     <div className="flex gap-10 relative">
       <CarouselProduct
@@ -12,7 +12,7 @@ export default ({ data }) => {
         images={data.images}
       />
       <Title data={data} />
-      <PurchaseOption data={data} />
+      <PurchaseOption handleCheckout={handleCheckout} data={data} />
     </div>
   );
 };

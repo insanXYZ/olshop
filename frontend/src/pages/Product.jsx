@@ -23,6 +23,8 @@ export default () => {
       });
   }, []);
 
+  const handleSetCart = () => {};
+
   const handleCheckout = (qty) => {
     request
       .post("/api/orders", {
@@ -34,31 +36,23 @@ export default () => {
         ],
       })
       .then((res) => {
-        var payment = document.getElementById("payment");
-        payment.addEventListener("click", function () {
-          // Trigger snap popup. @TODO: Replace TRANSACTION_TOKEN_HERE with your transaction token
-          window.snap.pay(res.data.token);
-          // customer will be redirected after completing payment pop-up
-        });
-        console.log(res.data);
+        window.snap.pay(res.data.data.token);
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const handleSetCart = () => {};
-
   return (
     <>
       <Helmet>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script
           type="text/javascript"
           src="https://app.sandbox.midtrans.com/snap/snap.js"
-          data-client-key={import.meta.env.VITE_BACKEND_URL}
+          data-client-key={import.meta.env.VITE_MIDTRANS_CLIENT_KEY}
         ></script>
       </Helmet>
-      <div id="payment"></div>
       <Main loading={product.length == 0}>
         <Header handleCheckout={handleCheckout} data={product} />
       </Main>

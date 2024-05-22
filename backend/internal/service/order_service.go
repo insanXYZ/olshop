@@ -47,9 +47,11 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 
 	order := &entity.Order{
 		ID:     uuid.New().String(),
+		Status: "unpaid",
 		UserID: claims["sub"].(string),
 	}
 	user := new(entity.User)
+	items := make([]midtrans.ItemDetails, len(req.DetailOrders))
 
 	err = service.DB.Transaction(func(tx *gorm.DB) error {
 
@@ -92,6 +94,13 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 			if err != nil {
 				return err
 			}
+
+			items = append(items, midtrans.ItemDetails{
+				ID:    product.ID,
+				Name:  product.Name,
+				Price: int64(product.Price),
+				Qty:   int32(detailOrder.Qty),
+			})
 		}
 
 		order.Total = total
@@ -112,11 +121,11 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 			OrderID:  order.ID,
 			GrossAmt: int64(order.Total),
 		},
-
 		CustomerDetail: &midtrans.CustomerDetails{
 			FName: user.Name,
 			Email: user.Email,
 		},
+		Items: &items,
 	}
 
 	s := snap.Client{}

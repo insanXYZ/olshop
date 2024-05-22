@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type OrderResponse struct {
 	ID           string                 `json:"id,omitempty"`
@@ -13,4 +15,10 @@ type OrderResponse struct {
 
 type CreateOrder struct {
 	DetailOrders []*CreateDetailOrder `json:"detail_orders" validate:"required,dive"`
+}
+
+type AfterPayment struct {
+	TransactionStatus string `json:"transaction_status"`
+	SignatureKey      string `json:"signature_key"`
+	OrderId           string `json:"order_id"`
 }

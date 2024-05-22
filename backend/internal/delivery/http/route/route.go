@@ -30,6 +30,7 @@ func (c *RouteConfig) SetupGuestRoute(api *echo.Group) {
 	api.GET("/categories", c.CategoryController.GetAll)
 	api.GET("/products", c.ProductController.GetAll)
 	api.GET("/products/:id", c.ProductController.GetDetails, c.Middleware.Optional)
+	api.POST("/order/after-payment", c.OrderController.AfterPayment)
 }
 
 func (c *RouteConfig) SetupAuthRoute(api *echo.Group) {

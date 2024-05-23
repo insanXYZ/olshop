@@ -15,6 +15,7 @@ type User struct {
 	UpdatedAt     time.Time            `gorm:"column:updated_at;autoCreateTime;autoUpdateTime"`
 	CartedProduct []*UserCartedProduct `gorm:"foreignKey:user_id;references:id"`
 	LikeProducts  []*Product           `gorm:"many2many:user_like_product;foreignKey:id;joinForeignKey:user_id;references:id;joinReferences:product_id"`
+	OrderProducts []*Order             `gorm:"foreignKey:user_id;references:id"`
 }
 
 func (u *User) TableName() string {

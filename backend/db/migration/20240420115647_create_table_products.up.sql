@@ -8,5 +8,6 @@ create table products
     category_id varchar(100) not null ,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp,
+    deleted_at timestamp null,
     foreign key (category_id) references categories(id)
 ) engine = innodb;

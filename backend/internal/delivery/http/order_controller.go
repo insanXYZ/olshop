@@ -4,7 +4,6 @@ import (
 	"backend/internal/model"
 	"backend/internal/service"
 	"backend/internal/utils/httpresponse"
-	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
@@ -40,7 +39,10 @@ func (controller *OrderController) AfterPayment(c echo.Context) error {
 		return err
 	}
 
-	fmt.Println(req)
+	err = controller.OrderService.AfterPayment(req)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
 
-	return httpresponse.Success(c, "success payment", req)
+	return httpresponse.Success(c, "success pay for the order", nil)
 }

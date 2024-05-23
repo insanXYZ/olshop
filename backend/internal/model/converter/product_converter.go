@@ -40,5 +40,6 @@ func ProductToResponse(product *entity.Product, idUser ...string) *model.Product
 			}
 			return false
 		}(product.LikedByUsers),
+		Order: len(product.Ordered),
 	}
 }

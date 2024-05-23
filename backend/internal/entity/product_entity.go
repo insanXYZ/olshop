@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -13,6 +14,7 @@ type Product struct {
 	Description         string               `gorm:"column:description"`
 	CreatedAt           time.Time            `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt           time.Time            `gorm:"column:updated_at;autoCreateTime;autoUpdateTime"`
+	DeletedAt           gorm.DeletedAt       `gorm:"index"`
 	Category            *Category            `gorm:"foreignKey:category_id;references:id"`
 	CartedProductByUser []*UserCartedProduct `gorm:"foreignKey:product_id;references:id"`
 	ImageProducts       []*ImageProduct      `gorm:"foreignKey:product_id;references:id"`

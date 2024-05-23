@@ -18,7 +18,9 @@ type CreateOrder struct {
 }
 
 type AfterPayment struct {
-	TransactionStatus string `json:"transaction_status"`
-	SignatureKey      string `json:"signature_key"`
-	OrderId           string `json:"order_id"`
+	TransactionStatus string `json:"transaction_status" validate:"required"`
+	SignatureKey      string `json:"signature_key" validate:"required"`
+	OrderId           string `json:"order_id" validate:"required"`
+	StatusCode        string `json:"status_code" validate:"required"`
+	GrossAmount       string `json:"gross_amount" validate:"required"`
 }

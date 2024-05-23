@@ -4,6 +4,8 @@ import (
 	"backend/internal/entity"
 	"backend/internal/model"
 	"backend/internal/repository"
+	"crypto/sha512"
+	"encoding/hex"
 	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v5"
@@ -51,7 +53,6 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 		UserID: claims["sub"].(string),
 	}
 	user := new(entity.User)
-	items := make([]midtrans.ItemDetails, len(req.DetailOrders))
 
 	err = service.DB.Transaction(func(tx *gorm.DB) error {
 
@@ -94,13 +95,6 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 			if err != nil {
 				return err
 			}
-
-			items = append(items, midtrans.ItemDetails{
-				ID:    product.ID,
-				Name:  product.Name,
-				Price: int64(product.Price),
-				Qty:   int32(detailOrder.Qty),
-			})
 		}
 
 		order.Total = total
@@ -125,7 +119,6 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 			FName: user.Name,
 			Email: user.Email,
 		},
-		Items: &items,
 	}
 
 	s := snap.Client{}
@@ -133,5 +126,65 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 	res, _ := s.CreateTransaction(reqSnap)
 
 	return res, nil
+
+}
+
+func (service *OrderService) AfterPayment(req *model.AfterPayment) error {
+	err := service.Validate.Struct(req)
+	if err != nil {
+		return err
+	}
+
+	if req.TransactionStatus == "capture" {
+		hash := sha512.New()
+		hash.Write([]byte(req.OrderId + req.StatusCode + req.GrossAmount + service.Viper.GetString("MD_SERVER_KEY")))
+		sha512Hash := hex.EncodeToString(hash.Sum(nil))
+
+		if sha512Hash == req.SignatureKey {
+
+			err := service.DB.Transaction(func(tx *gorm.DB) error {
+
+				order := new(entity.Order)
+				order.ID = req.OrderId
+				err := service.OrderRepository.TakeWithGetRelationDetailOrder(tx, order)
+				if err != nil {
+					return err
+				}
+
+				order.Status = "paid"
+				err = service.OrderRepository.Save(tx, order)
+				if err != nil {
+					return err
+				}
+
+				for _, detailOrder := range order.DetailOrders {
+
+					product := new(entity.Product)
+					product.ID = detailOrder.ProductId
+
+					err := service.ProductRepository.Take(tx, product)
+					if err != nil {
+						return err
+					}
+
+					product.Qty = product.Qty - detailOrder.Qty
+
+					err = service.ProductRepository.Save(tx, product)
+					if err != nil {
+						return err
+					}
+
+				}
+
+				return nil
+
+			})
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return errors.New("failed to pay for the order")
 
 }

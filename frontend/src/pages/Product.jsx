@@ -1,10 +1,8 @@
 import { useParams } from "react-router-dom";
 import Main from "../components/templates/Main";
-import { useSelector } from "react-redux";
 import Header from "../components/organisms/product/Header";
 import { useEffect, useState } from "react";
 import request from "../utils/request/request";
-import Modal from "../components/atoms/Modal";
 import { Helmet } from "react-helmet";
 
 export default () => {
@@ -36,7 +34,11 @@ export default () => {
         ],
       })
       .then((res) => {
-        window.snap.pay(res.data.data.token);
+        window.snap.pay(res.data.data.token, {
+          onSuccess: function () {
+            window.location.reload();
+          },
+        });
       })
       .catch((err) => {
         console.log(err);

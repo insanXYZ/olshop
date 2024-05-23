@@ -17,6 +17,7 @@ type ProductResponse struct {
 	Liked         bool                         `json:"liked,omitempty"`
 	LikedCount    int                          `json:"liked_count,omitempty"`
 	CartedByUsers []*UserCartedProductResponse `json:"carted_by_users,omitempty"`
+	Order         int                          `json:"order,omitempty"`
 }
 
 type GetDetailsProduct struct {

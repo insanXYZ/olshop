@@ -23,7 +23,9 @@ func (repo *ProductRepository) GetAllWithManyRelations(products *[]entity.Produc
 }
 
 func (repo *ProductRepository) GetByIdWithManyRelations(products *entity.Product, id any, db *gorm.DB) error {
-	err := db.Preload("Category").Preload("ImageProducts").Preload("LikedByUsers").Take(products, "id =?", id).Error
+	err := db.Preload("Category").Preload("Ordered.Order", func(db *gorm.DB) *gorm.DB {
+		return db.Where("status = ?", "paid")
+	}).Preload("ImageProducts").Preload("LikedByUsers").Take(products, "id =?", id).Error
 	return err
 }
 

@@ -55,7 +55,11 @@ export default ({ data, handleCheckout }) => {
         <div className="flex justify-between items-center">
           <span>Subtotal</span>
           <span className="font-lato-b text-lg">
-            {toRupiah(data.price * qty, { dot: ".", floatingPoint: 0 })}
+            {toRupiah(data.price * qty, {
+              dot: ".",
+              floatingPoint: 0,
+              formal: false,
+            })}
           </span>
         </div>
         <div className="flex flex-col gap-2">

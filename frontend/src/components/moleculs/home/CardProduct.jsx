@@ -13,7 +13,11 @@ export default ({ product }) => {
         <div className="line-clamp-2">{product.name}</div>
       </div>
       <span className="font-outfit-b text-end text-lg line-clamp-1">
-        {toRupiah(product.price)}
+        {toRupiah(product.price, {
+          dot: ".",
+          formal: false,
+          floatingPoint: 0,
+        })}
       </span>
     </Link>
   );

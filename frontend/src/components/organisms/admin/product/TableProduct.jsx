@@ -22,7 +22,12 @@ export default ({ list, onDelete }) => {
           Price
         </div>
       ),
-      selector: (row) => toRupiah(row.price),
+      selector: (row) =>
+        toRupiah(row.price, {
+          dot: ".",
+          formal: false,
+          floatingPoint: 0,
+        }),
       sortable: true,
     },
     {

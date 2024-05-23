@@ -54,11 +54,17 @@ func (service *UserCartedProductService) Carted(claims jwt.MapClaims, req *model
 		ProductID: product.ID,
 	}
 
-	if count := service.UserCartedRepository.CountWithUserAndProduct(service.DB, userCartedProduct); count == 0 {
+	count, err := service.UserCartedRepository.CountByWhere(service.DB, userCartedProduct)
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
 		userCartedProduct.Qty = req.Qty
 		err = service.UserCartedRepository.Create(service.DB, userCartedProduct)
 		return err
 	}
+
 	err = service.UserCartedRepository.Take(service.DB, userCartedProduct)
 	if err != nil {
 		return err

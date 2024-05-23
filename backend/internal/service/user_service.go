@@ -128,21 +128,19 @@ func (service *UserService) UpdateUser(c echo.Context, claims jwt.MapClaims, req
 	}
 
 	file, errFile := c.FormFile("image")
-	if errFile != nil {
-		return err
-	}
 
 	err = service.DB.Transaction(func(tx *gorm.DB) error {
 
 		user := new(entity.User)
 
-		err := service.UserRepository.TakeById(service.DB, user, claims["sub"])
+		err := service.UserRepository.TakeById(tx, user, claims["sub"])
 		if err != nil {
 			return err
 		}
 
-		user.Name = req.Name
-		user.Email = req.Email
+		data := new(entity.User)
+		data.Name = req.Name
+		data.Email = req.Email
 
 		if errFile == nil { // file not empty
 			err := sage.Validate(file)
@@ -151,7 +149,7 @@ func (service *UserService) UpdateUser(c echo.Context, claims jwt.MapClaims, req
 			}
 
 			filename := claims["sub"].(string) + "-" + file.Filename
-			user.Image = filename
+			data.Image = filename
 
 			dsn, err := os.Create("storage/app/user/" + filename)
 			if err != nil {
@@ -173,7 +171,7 @@ func (service *UserService) UpdateUser(c echo.Context, claims jwt.MapClaims, req
 
 		}
 
-		err = service.UserRepository.Save(service.DB, user)
+		err = service.UserRepository.Update(tx, user, data)
 		return err
 	})
 
@@ -193,7 +191,9 @@ func (service *UserService) UpdatePassword(claims jwt.MapClaims, req *model.Upda
 		return err
 	}
 
-	err = service.UserRepository.UpdateById(service.DB, req, user.ID)
+	err = service.UserRepository.Update(service.DB, user, &entity.User{
+		Password: req.NewPassword,
+	})
 	return err
 }
 

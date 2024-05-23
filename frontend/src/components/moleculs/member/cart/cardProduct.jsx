@@ -35,6 +35,7 @@ export default ({ data, handleChangeCounter }) => {
         {toRupiah(data.product.price * qty, {
           dot: ".",
           floatingPoint: 0,
+          formal: false,
         })}
       </th>
     </tr>

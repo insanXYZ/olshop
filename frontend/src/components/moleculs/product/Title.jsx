@@ -9,7 +9,7 @@ export default ({ data }) => {
       </div>
 
       <div className="text-4xl font-lato-b">
-        {toRupiah(data.price, { dot: ".", floatingPoint: 0 })}
+        {toRupiah(data.price, { dot: ".", floatingPoint: 0, formal: false })}
       </div>
       <div className="whitespace-pre-line">{data.description}</div>
     </div>

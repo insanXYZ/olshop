@@ -18,12 +18,12 @@ func (r *Repository[T]) Delete(db *gorm.DB, entity *T) error {
 }
 
 func (r *Repository[T]) Take(db *gorm.DB, entity *T) error {
-	return db.Take(entity).Error
+	return db.Model(new(T)).Where(entity).Take(entity).Error
 }
 
-func (r *Repository[T]) CountById(db *gorm.DB, id any) (int64, error) {
+func (r *Repository[T]) CountByWhere(db *gorm.DB, where *T) (int64, error) {
 	var total int64
-	err := db.Model(new(T)).Where("id = ?", id).Count(&total).Error
+	err := db.Model(new(T)).Where(where).Count(&total).Error
 	return total, err
 }
 
@@ -37,6 +37,6 @@ func (r *Repository[T]) FindAll(db *gorm.DB) ([]T, error) {
 	return model, err
 }
 
-func (r *Repository[T]) UpdateById(db *gorm.DB, data, id any) error {
-	return db.Model(new(T)).Where("id = ?", id).Updates(data).Error
+func (r *Repository[T]) Update(db *gorm.DB, model *T, data *T) error {
+	return db.Model(model).Updates(data).Error
 }

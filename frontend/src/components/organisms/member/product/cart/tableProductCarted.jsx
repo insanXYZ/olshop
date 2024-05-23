@@ -4,34 +4,7 @@ import CarouselProduct from "../../../../moleculs/CarouselProduct";
 import toRupiah from "@develoka/angka-rupiah-js";
 import Counter from "../../../../moleculs/Counter";
 
-// export default ({ data, handleChangeCounter }) => {
-//   return (
-//     <div className="overflow-x-auto">
-//       <table className="table table-lg">
-//         <thead>
-//           <tr>
-//             <th> </th>
-//             <th>Product</th>
-//             <th>Price</th>
-//             <th>Qty</th>
-//             <th>Total</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {data.map((v, i) => (
-//             <CartProduct
-//               handleChangeCounter={handleChangeCounter}
-//               key={i}
-//               data={v}
-//             />
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-export default ({ data, handleChangeCounter }) => {
+export default ({ data, handleChangeCounter, handleChangeSelectedTable }) => {
   const columns = [
     {
       name: (
@@ -53,7 +26,11 @@ export default ({ data, handleChangeCounter }) => {
         </div>
       ),
       selector: (row) =>
-        toRupiah(row.product.price, { dot: ".", floatingPoint: 0 }),
+        toRupiah(row.product.price, {
+          dot: ".",
+          floatingPoint: 0,
+          formal: false,
+        }),
       sortable: true,
     },
     {
@@ -82,6 +59,7 @@ export default ({ data, handleChangeCounter }) => {
         toRupiah(row.product.price * row.qty, {
           dot: ".",
           floatingPoint: 0,
+          formal: false,
         }),
       sortable: true,
     },
@@ -94,6 +72,7 @@ export default ({ data, handleChangeCounter }) => {
       pagination
       fixedHeader={true}
       fixedHeaderScrollHeight="700px"
+      onSelectedRowsChange={handleChangeSelectedTable}
       selectableRows
     />
   );

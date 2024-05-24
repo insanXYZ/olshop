@@ -25,7 +25,7 @@ export default () => {
     }
 
     request
-      .patch("/api/users", formData, {
+      .put("/api/users", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

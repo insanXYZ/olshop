@@ -23,7 +23,7 @@ export default () => {
     let form = new FormData();
     form.append("qty", num);
     request
-      .patch("/api/carts/" + id, form)
+      .put("/api/carts/" + id, form)
       .then((res) => {
         dispatch(
           setQty({
@@ -64,14 +64,18 @@ export default () => {
   };
 
   const handleCheckout = () => {
+    let orders = [];
+
+    selectedRows.forEach((element) => {
+      orders.push({
+        product_id: element.product.id,
+        qty: element.qty,
+      });
+    });
+
     request
       .post("/api/orders", {
-        detail_orders: [
-          {
-            product_id: product.id,
-            qty,
-          },
-        ],
+        detail_orders: orders,
       })
       .then((res) => {
         window.snap.pay(res.data.data.token, {
@@ -82,6 +86,21 @@ export default () => {
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  const handleDelete = () => {
+    request
+      .delete("/api/carts", {
+        data: {
+          carts_id: selectedRows.map((item) => item.id),
+        },
+      })
+      .then((res) => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        toast.error(err);
       });
   };
 
@@ -113,6 +132,8 @@ export default () => {
           productsCarted.length != 0 &&
           selectedRows.length != 0 && (
             <BottomBarOption
+              onDelete={handleDelete}
+              onCheckout={handleCheckout}
               total={selectedRows.reduce((acc, curr) => {
                 return acc + curr.qty * curr.product.price;
               }, 0)}

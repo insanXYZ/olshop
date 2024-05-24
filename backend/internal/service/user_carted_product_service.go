@@ -99,3 +99,36 @@ func (service *UserCartedProductService) Update(claims jwt.MapClaims, req *model
 	}
 	return nil
 }
+
+func (service *UserCartedProductService) DeleteOrder(claims jwt.MapClaims, req *model.DeleteCarts) error {
+	err := service.Validate.Struct(req)
+	if err != nil {
+		return err
+	}
+
+	err = service.DB.Transaction(func(tx *gorm.DB) error {
+
+		for _, cartId := range req.CartsID {
+
+			cart := &entity.UserCartedProduct{
+				ID:     cartId,
+				UserID: claims["sub"].(string),
+			}
+
+			err := service.UserCartedRepository.Take(tx, cart)
+			if err != nil {
+				return err
+			}
+
+			err = service.UserCartedRepository.Delete(tx, cart)
+			if err != nil {
+				return err
+			}
+
+		}
+
+		return nil
+
+	})
+	return err
+}

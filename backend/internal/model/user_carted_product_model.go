@@ -14,3 +14,7 @@ type UpdateCart struct {
 	ID  int `param:"id" validate:"required"`
 	Qty int `json:"qty" form:"qty" validate:"required"`
 }
+
+type DeleteCarts struct {
+	CartsID []int `json:"carts_id" form:"carts_id" validate:"required"`
+}

@@ -32,12 +32,14 @@ export default () => {
         <HeaderLiked />
       </Card>
       <div className="h-full">
-        <div className="grid grid-cols-5">
-          {req != false && data.length > 0 && <ListProductLiked data={data} />}
-          {req == true && data.length == 0 && (
-            <div className="text-center">products liked is empty</div>
-          )}
-        </div>
+        {req != false && data.length > 0 && (
+          <div className="grid grid-cols-5">
+            <ListProductLiked data={data} />
+          </div>
+        )}
+        {req == true && data.length == 0 && (
+          <div className="text-center">products liked is empty</div>
+        )}
       </div>
     </Dashboard>
   );

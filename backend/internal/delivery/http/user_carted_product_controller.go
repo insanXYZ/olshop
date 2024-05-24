@@ -52,3 +52,20 @@ func (controller *UserCartedProductController) Update(c echo.Context) error {
 
 	return httpresponse.Success(c, "success update product to cart", nil)
 }
+
+func (controller *UserCartedProductController) Delete(c echo.Context) error {
+	claims := c.Get("user").(jwt.MapClaims)
+	req := new(model.DeleteCarts)
+	err := c.Bind(req)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+
+	err = controller.UserCartedProductService.DeleteOrder(claims, req)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+
+	return httpresponse.Success(c, "success delete orders", nil)
+
+}

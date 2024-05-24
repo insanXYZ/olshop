@@ -18,7 +18,7 @@ export default () => {
     formData.append("new_password", newPassword);
 
     request
-      .patch("/api/users/password", formData)
+      .put("/api/users/password", formData)
       .then((res) => {
         window.location.reload();
       })

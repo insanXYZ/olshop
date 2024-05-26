@@ -1,4 +1,4 @@
-create table user_carted_product
+create table user_carted_products
 (
     id int primary key auto_increment,
     user_id varchar(100) not null,

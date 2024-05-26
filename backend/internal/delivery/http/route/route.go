@@ -22,6 +22,7 @@ func (c *RouteConfig) Setup() {
 	api := c.App.Group("/api")
 	c.SetupGuestRoute(api)
 	c.SetupAuthRoute(api)
+
 }
 
 func (c *RouteConfig) SetupGuestRoute(api *echo.Group) {

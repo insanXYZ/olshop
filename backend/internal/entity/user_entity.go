@@ -14,7 +14,7 @@ type User struct {
 	CreatedAt     time.Time            `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt     time.Time            `gorm:"column:updated_at;autoCreateTime;autoUpdateTime"`
 	CartedProduct []*UserCartedProduct `gorm:"foreignKey:user_id;references:id"`
-	LikeProducts  []*Product           `gorm:"many2many:user_like_product;foreignKey:id;joinForeignKey:user_id;references:id;joinReferences:product_id"`
+	LikeProducts  []*Product           `gorm:"many2many:user_like_products;foreignKey:id;joinForeignKey:user_id;references:id;joinReferences:product_id"`
 	OrderProducts []*Order             `gorm:"foreignKey:user_id;references:id"`
 }
 

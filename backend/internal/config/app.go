@@ -31,10 +31,11 @@ func Bootstrap(config *BootstrapConfig) {
 	userCartedProductRepository := repository.NewUserCartedProductRepository(config.Log)
 	orderRepository := repository.NewOrderRepository(config.Log)
 	detailOrderRepository := repository.NewDetailOrderRepository(config.Log)
+	imageCategoryRepository := repository.NewImageCategoryRepository(config.Log)
 
 	//setup services
 	userService := service.NewUserService(config.DB, config.Log, config.Validate, userRepository, config.ViperConfig)
-	categoryService := service.NewCategoryService(config.DB, config.Log, config.Validate, categoryRepository)
+	categoryService := service.NewCategoryService(config.DB, config.Log, config.Validate, categoryRepository, imageCategoryRepository)
 	imageProductService := service.NewImageProductService(config.DB, config.Log, config.Validate, imageProductRepository)
 	productService := service.NewProductService(config.DB, config.Log, config.Validate, productRepository, userRepository, imageProductRepository, userCartedProductRepository)
 	userCartedProductService := service.NewUserCartedProductService(config.DB, config.Log, config.Validate, productRepository, userRepository, userCartedProductRepository)

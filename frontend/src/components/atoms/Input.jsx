@@ -15,6 +15,7 @@ export default ({
       placeholder={placeholder}
       defaultValue={defaultValue}
       className={`input w-full ${className}`}
+      {...att}
     />
   );
 };

@@ -224,7 +224,7 @@ func (service *ProductService) Update(req *model.UpdateProduct, images []*multip
 					return err
 				}
 
-				filename := uuid.New().String() + "-" + req.Name + "." + strings.Split(header.Filename, ".")[len(strings.Split(header.Filename, "."))-1]
+				filename := uuid.New().String() + "-" + product.Name + "." + strings.Split(header.Filename, ".")[len(strings.Split(header.Filename, "."))-1]
 
 				image := &entity.ImageProduct{
 					Name:      filename,

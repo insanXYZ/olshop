@@ -14,5 +14,5 @@ type UserCartedProduct struct {
 }
 
 func (receiver *UserCartedProduct) TableName() string {
-	return "user_carted_product"
+	return "user_carted_products"
 }

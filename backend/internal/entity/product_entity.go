@@ -18,7 +18,7 @@ type Product struct {
 	Category            *Category            `gorm:"foreignKey:category_id;references:id"`
 	CartedProductByUser []*UserCartedProduct `gorm:"foreignKey:product_id;references:id"`
 	ImageProducts       []*ImageProduct      `gorm:"foreignKey:product_id;references:id"`
-	LikedByUsers        []*User              `gorm:"many2many:user_like_product;foreignKey:id;joinForeignKey:product_id;references:id;joinReferences:user_id"`
+	LikedByUsers        []*User              `gorm:"many2many:user_like_products;foreignKey:id;joinForeignKey:product_id;references:id;joinReferences:user_id"`
 	Ordered             []*DetailOrder       `gorm:"foreignKey:product_id;references:id"`
 }
 

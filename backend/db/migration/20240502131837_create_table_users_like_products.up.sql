@@ -1,4 +1,4 @@
-create table user_like_product
+create table user_like_products
 (
     user_id varchar(100) not null,
     product_id varchar(100) not null,

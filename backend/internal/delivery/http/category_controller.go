@@ -39,7 +39,12 @@ func (controller *CategoryController) Create(c echo.Context) error {
 		return err
 	}
 
-	err = controller.CategoryService.Create(req)
+	file, err := c.FormFile("image")
+	if err != nil {
+		return err
+	}
+
+	err = controller.CategoryService.Create(req, file)
 	if err != nil {
 		return err
 	}

@@ -105,3 +105,22 @@ func (controller *ProductController) Liked(c echo.Context) error {
 
 	return httpresponse.Success(c, message, nil)
 }
+
+func (controller *ProductController) Update(c echo.Context) error {
+	req := new(model.UpdateProduct)
+	err := c.Bind(req)
+	if err != nil {
+		return err
+	}
+	images, err := c.MultipartForm()
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+
+	form := images.File["images[]"]
+
+	if err = controller.ProductService.Update(req, form); err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+	return httpresponse.Success(c, "success update product", nil)
+}

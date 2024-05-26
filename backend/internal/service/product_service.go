@@ -124,13 +124,6 @@ func (service *ProductService) Create(req *model.CreateProduct, images []*multip
 		return err
 	}
 
-	for _, image := range images {
-		err := sage.Validate(image)
-		if err != nil {
-			return err
-		}
-	}
-
 	err := service.DB.Transaction(func(tx *gorm.DB) error {
 		product := &entity.Product{
 			ID:          uuid.New().String(),
@@ -147,6 +140,11 @@ func (service *ProductService) Create(req *model.CreateProduct, images []*multip
 		}
 
 		for _, header := range images {
+			err := sage.Validate(header)
+			if err != nil {
+				return err
+			}
+
 			filename := uuid.New().String() + "-" + req.Name + "." + strings.Split(header.Filename, ".")[len(strings.Split(header.Filename, "."))-1]
 
 			image := &entity.ImageProduct{
@@ -154,7 +152,7 @@ func (service *ProductService) Create(req *model.CreateProduct, images []*multip
 				ProductID: product.ID,
 			}
 
-			err := service.ImageProductRepository.Create(tx, image)
+			err = service.ImageProductRepository.Create(tx, image)
 			if err != nil {
 				return err
 			}
@@ -183,4 +181,84 @@ func (service *ProductService) Create(req *model.CreateProduct, images []*multip
 
 	return err
 
+}
+
+func (service *ProductService) Update(req *model.UpdateProduct, images []*multipart.FileHeader) error {
+	err := service.Validate.Struct(req)
+	if err != nil {
+		return err
+	}
+
+	err = service.DB.Transaction(func(tx *gorm.DB) error {
+
+		product := new(entity.Product)
+		product.ID = req.ID
+
+		err := service.ProductRepository.Take(tx, product)
+		if err != nil {
+			return err
+		}
+
+		err = service.ProductRepository.Update(tx, product, &entity.Product{
+			Name:        req.Name,
+			Price:       req.Price,
+			Qty:         req.Qty,
+			CategoryID:  req.CategoryID,
+			Description: req.Description,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		if len(images) != 0 {
+
+			err := service.ImageProductRepository.DeleteByProductId(tx, product.ID)
+			if err != nil {
+				return err
+			}
+
+			for _, header := range images {
+				err := sage.Validate(header)
+				if err != nil {
+					return err
+				}
+
+				filename := uuid.New().String() + "-" + req.Name + "." + strings.Split(header.Filename, ".")[len(strings.Split(header.Filename, "."))-1]
+
+				image := &entity.ImageProduct{
+					Name:      filename,
+					ProductID: product.ID,
+				}
+
+				err = service.ImageProductRepository.Create(tx, image)
+				if err != nil {
+					return err
+				}
+
+				dsn, err := os.Create("storage/app/product/" + filename)
+				if err != nil {
+					return err
+				}
+
+				open, err := header.Open()
+				if err != nil {
+					return err
+				}
+
+				_, err = io.Copy(dsn, open)
+				if err != nil {
+					return err
+				}
+				dsn.Close()
+				open.Close()
+
+			}
+
+		}
+
+		return nil
+
+	})
+	return err
 }

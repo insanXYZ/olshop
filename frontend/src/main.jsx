@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import "react-toastify/dist/ReactToastify.css";
 import toast from "./components/toast/container";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

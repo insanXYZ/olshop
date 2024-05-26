@@ -12,13 +12,16 @@ export default ({
         <Carousel showThumbs={thumbs}>
           {images.map((v, i) => (
             <div key={i} className="bg-dark-neutral rounded-2xl">
-              <img src={v[source]} className={"aspect-square object-contain"} />
+              <img
+                src={source != "" ? v[source] : v}
+                className={"aspect-square object-contain"}
+              />
             </div>
           ))}
         </Carousel>
       ) : (
         <img
-          src={images[0][source]}
+          src={source != "" ? images[0][source] : images[0]}
           className={"aspect-square object-contain"}
         />
       )}

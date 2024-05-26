@@ -2,27 +2,36 @@ import Dashboard from "../../components/templates/Dashboard";
 import Card from "../../components/atoms/Card.Dashboard";
 import HeaderProduct from "../../components/organisms/admin/product/HeaderProduct";
 import ModalCreateProduct from "../../components/organisms/admin/product/ModalCreateProduct";
-import { useState } from "react";
+import ModalUpdateProduct from "../../components/organisms/admin/product/ModalUpdateProduct";
+import { useEffect, useState } from "react";
 import request from "../../utils/request/request";
 import TableProducts from "../../components/organisms/admin/product/TableProduct";
 import { useSelector } from "react-redux";
 import ModalConfirm from "../../components/moleculs/ModalConfirm";
+import { toast } from "react-toastify";
 
 export default () => {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [qty, setQty] = useState("");
-  const [category, setCategory] = useState("");
-  const [description, setDescription] = useState("");
-  const [images, setImages] = useState(null);
   const [dataDelete, setDataDelete] = useState("");
+  const [dataUpdate, setDataUpdate] = useState(null);
 
   const products = useSelector((s) => s.products.data);
 
-  const handleDelete = (id) => {
-    setDataDelete(products.find((x) => x.id == id));
+  const handleDelete = (data) => {
+    setDataDelete(data);
     document.getElementById("modal_delete_product").showModal();
   };
+
+  const handleUpdate = (data) => {
+    setDataUpdate(null);
+    setTimeout(() => {
+      setDataUpdate(data);
+      document.getElementById("modal_update_product").showModal();
+    }, 50);
+  };
+
+  useEffect(() => {
+    console.log(dataUpdate);
+  }, [dataUpdate]);
 
   const handleConfirmDelete = () => {
     request
@@ -35,56 +44,13 @@ export default () => {
       });
   };
 
-  const handleChangeImage = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setImages({
-        url: Array.from(e.target.files).map((file) =>
-          URL.createObjectURL(file)
-        ),
-        file: e.target.files,
-      });
-    }
-  };
-
-  const handleChangeCategory = (v) => {
-    setCategory(v.target.value);
-  };
-
-  const handleChangeQty = (v) => {
-    setQty(v.target.value);
-  };
-
-  const handleChangeName = (v) => {
-    setName(v.target.value);
-  };
-
-  const handleChangePrice = (v) => {
-    setPrice(v.target.value);
-  };
-
-  const handleChangeDescription = (v) => {
-    setDescription(v.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmitCreate = (data) => {
     request
-      .post(
-        "/api/products",
-        {
-          name: name,
-          price: Number(price),
-          qty: Number(qty),
-          description: description,
-          category_id: category,
-          images: images.file,
+      .post("/api/products", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
+      })
       .then((res) => {
         window.location.reload();
       })
@@ -93,18 +59,25 @@ export default () => {
       });
   };
 
+  const handleSubmitUpdate = (data) => {
+    request
+      .put("/api/products/" + dataUpdate.id, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        window.location.reload();
+      })
+      .catch((err) => {
+        toast.error(err);
+      });
+  };
+
   return (
     <>
-      <ModalCreateProduct
-        onChangeCategory={handleChangeCategory}
-        onChangeName={handleChangeName}
-        onChangeDesc={handleChangeDescription}
-        onChangeImage={handleChangeImage}
-        onChangePrice={handleChangePrice}
-        onSubmit={handleSubmit}
-        onChangeQty={handleChangeQty}
-        urlImage={images}
-      />
+      <ModalCreateProduct onSubmit={handleSubmitCreate} />
+      <ModalUpdateProduct data={dataUpdate} onSubmit={handleSubmitUpdate} />
       <ModalConfirm
         id={"modal_delete_product"}
         onConfirm={handleConfirmDelete}
@@ -117,7 +90,11 @@ export default () => {
         <Card>
           <div className="flex flex-col gap-5">
             <HeaderProduct />
-            <TableProducts onDelete={handleDelete} list={products} />
+            <TableProducts
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+              list={products}
+            />
           </div>
         </Card>
       </Dashboard>

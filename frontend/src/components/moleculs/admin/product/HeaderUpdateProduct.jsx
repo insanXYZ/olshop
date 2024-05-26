@@ -12,6 +12,7 @@ export default ({
   onChangeCategory,
   onChangeQty,
   urlImage,
+  data,
 }) => {
   const categories = useSelector((s) => s.categories.data);
 
@@ -19,6 +20,7 @@ export default ({
     <div className="flex gap-5">
       <div className="flex flex-col gap-5 w-4/5">
         <Input
+          defaultValue={data.name}
           className={"bg-dark-neutral"}
           onChange={onChangeName}
           placeholder={"Named product"}
@@ -26,6 +28,7 @@ export default ({
         />
         <div className="flex items-center gap-5">
           <Input
+            defaultValue={data.price}
             type="number"
             className={"bg-dark-neutral w-2/3"}
             onChange={onChangePrice}
@@ -33,6 +36,7 @@ export default ({
             required
           />
           <Input
+            defaultValue={data.qty}
             type="number"
             className={"bg-dark-neutral w-1/3"}
             onChange={onChangeQty}
@@ -44,31 +48,29 @@ export default ({
           onChange={onChangeCategory}
           title={"Category"}
           className={"bg-dark-neutral w-full"}
+          selectTitle={false}
           required
         >
           {categories.map((v, i) => (
-            <option key={i} value={v.id}>
+            <option key={i} value={v.id} selected={v.id == data.category.id}>
               {v.name}
             </option>
           ))}
         </Select>
       </div>
-      <label htmlFor="images" className="w-1/5 cursor-pointer">
-        {urlImage == null ? (
-          <div className=" aspect-square rounded-lg border-2 flex justify-center items-center">
-            <CiImageOn className="text-6xl" />
-          </div>
-        ) : (
-          <CarouselProduct images={urlImage.url} source={""} />
-        )}
+      <label htmlFor="imagesUpdate" className="w-1/5 cursor-pointer">
+        <CarouselProduct
+          images={urlImage != null ? urlImage.url : data.images}
+          source={urlImage != null ? "" : "url"}
+        />
         <input
-          name="images"
+          name="imagesUpdate"
           className="hidden"
           onChange={onChangeImage}
           multiple
           type="file"
           accept="image/*"
-          id="images"
+          id="imagesUpdate"
           required
         />
       </label>

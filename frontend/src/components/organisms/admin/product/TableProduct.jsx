@@ -1,11 +1,10 @@
 import { CiEdit, CiTrash } from "react-icons/ci";
 import Button from "../../../atoms/Button";
 import DataTable from "../../../atoms/Datatable";
-import Carousel from "../../../atoms/Carousel";
 import toRupiah from "@develoka/angka-rupiah-js";
 import CarouselProduct from "../../../moleculs/CarouselProduct";
 
-export default ({ list, onDelete }) => {
+export default ({ list, onDelete, onUpdate }) => {
   const columns = [
     {
       name: (
@@ -68,10 +67,10 @@ export default ({ list, onDelete }) => {
       ),
       selector: (row) => (
         <div className=" py-2 flex w-full items-center gap-5">
-          <Button className={"bg-green-500"}>
+          <Button onClick={() => onUpdate(row)} className={"bg-green-500"}>
             <CiEdit /> update
           </Button>
-          <Button onClick={() => onDelete(row.id)} className={"bg-red-500"}>
+          <Button onClick={() => onDelete(row)} className={"bg-red-500"}>
             <CiTrash /> delete
           </Button>
         </div>

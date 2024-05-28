@@ -26,10 +26,7 @@ func (controller *ProductController) GetAll(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(200, model.WebResponse{
-		Data:    products,
-		Message: "success get all product",
-	})
+	return httpresponse.Success(c, "success get all products", products)
 }
 
 func (controller *ProductController) Create(c echo.Context) error {

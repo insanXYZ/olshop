@@ -6,7 +6,6 @@ export default ({ data, handleCheckout }) => {
   return (
     <div className="flex gap-10 relative">
       <CarouselProduct
-        sour
         thumbs={true}
         className={"w-1/5 sticky top-0"}
         images={data.images}

@@ -18,7 +18,9 @@ func NewProductRepository(log *logrus.Logger) *ProductRepository {
 }
 
 func (repo *ProductRepository) GetAllWithManyRelations(products *[]entity.Product, db *gorm.DB) error {
-	err := db.Preload("Category").Preload("ImageProducts").Preload("LikedByUsers").Find(products).Error
+	err := db.Preload("Category", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).Preload("ImageProducts").Preload("LikedByUsers").Find(products).Error
 	return err
 }
 

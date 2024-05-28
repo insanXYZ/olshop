@@ -3,6 +3,7 @@ package service
 import (
 	"backend/internal/entity"
 	"backend/internal/model"
+	"backend/internal/model/converter"
 	"backend/internal/repository"
 	"errors"
 	"github.com/go-playground/validator/v10"
@@ -34,12 +35,19 @@ func NewCategoryService(db *gorm.DB, log *logrus.Logger, validate *validator.Val
 	}
 }
 
-func (service *CategoryService) GetAll() ([]entity.Category, error) {
-	categories, err := service.CategoryRepository.FindAll(service.DB)
+func (service *CategoryService) GetAll() ([]*model.CategoryResponse, error) {
+	var categories []entity.Category
+	err := service.CategoryRepository.FindAllWithImageRelation(service.DB, &categories)
 	if err != nil {
 		return nil, err
 	}
-	return categories, nil
+
+	res := make([]*model.CategoryResponse, len(categories))
+	for i, category := range categories {
+		res[i] = converter.CategoryToResponse(&category)
+	}
+
+	return res, nil
 }
 
 func (service *CategoryService) Create(req *model.CreateCategory, image *multipart.FileHeader) error {
@@ -116,4 +124,67 @@ func (service *CategoryService) Delete(req *model.DeleteCategory) error {
 	}
 
 	return nil
+}
+
+func (service *CategoryService) Update(req *model.UpdateCategory, file *multipart.FileHeader) error {
+
+	err := service.Validate.Struct(req)
+	if err != nil {
+		return err
+	}
+
+	err = service.DB.Transaction(func(tx *gorm.DB) error {
+
+		category := &entity.Category{
+			ID: req.ID,
+		}
+
+		err := service.CategoryRepository.TakeWithImageRelation(tx, category)
+		if err != nil {
+			return err
+		}
+
+		categoryUpdate := &entity.Category{
+			Name: req.Name,
+		}
+
+		err := service.CategoryRepository.Save(tx, categoryUpdate)
+		if err != nil {
+			return err
+		}
+
+		if file != nil {
+
+			filename := uuid.New().String() + "-" + category.Name + "." + strings.Split(file.Filename, ".")[len(strings.Split(file.Filename, "."))-1]
+
+			open, err := file.Open()
+			if err != nil {
+				return err
+			}
+
+			dsn, err := os.Create("storage/app/category/" + filename)
+			if err != nil {
+				return err
+			}
+
+			_, err = io.Copy(dsn, open)
+			if err != nil {
+				return err
+			}
+
+			err = os.Remove("storage/app/category/" + category.Image.Name)
+			if err != nil {
+				return err
+			}
+
+			categoryUpdate.Image.Name = filename
+
+		}
+
+		return
+
+	})
+
+	return err
+
 }

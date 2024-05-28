@@ -14,5 +14,6 @@ func CategoryToResponse(category *entity.Category) *model.CategoryResponse {
 		ID:        category.ID,
 		Name:      category.Name,
 		CreatedAt: category.CreatedAt,
+		Image:     ImageCategoryToResponse(category.Image),
 	}
 }

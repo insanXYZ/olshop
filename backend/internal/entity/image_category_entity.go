@@ -8,6 +8,7 @@ type ImageCategory struct {
 	CategoryID string `gorm:"column:category_id"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	Category   *Category `gorm:"foreignKey:category_id;references:id"`
 }
 
 func (c *ImageCategory) TableName() string {

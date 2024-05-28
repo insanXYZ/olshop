@@ -26,10 +26,7 @@ func (controller *CategoryController) GetAll(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(200, model.WebResponse{
-		Data:    categories,
-		Message: "success get all categories",
-	})
+	return httpresponse.Success(c, "success get all categories", categories)
 }
 
 func (controller *CategoryController) Create(c echo.Context) error {
@@ -67,4 +64,21 @@ func (controller *CategoryController) Delete(c echo.Context) error {
 	}
 
 	return httpresponse.Success(c, "success delete category", nil)
+}
+
+func (controller *CategoryController) Update(c echo.Context) error {
+	req := new(model.UpdateCategory)
+	err := c.Bind(req)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+	file, _ := c.FormFile("image")
+
+	err = controller.CategoryService.Update(req, file)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+
+	return httpresponse.Success(c, "success update category", nil)
+
 }

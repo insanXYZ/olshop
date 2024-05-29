@@ -22,7 +22,13 @@ func NewProductController(authService *service.ProductService, logger *logrus.Lo
 }
 
 func (controller *ProductController) GetAll(c echo.Context) error {
-	products, err := controller.ProductService.GetAll()
+	req := new(model.FilterQueryParamProduct)
+	err := c.Bind(req)
+	if err != nil {
+		return err
+	}
+
+	products, err := controller.ProductService.GetAll(req)
 	if err != nil {
 		return err
 	}

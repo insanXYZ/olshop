@@ -23,7 +23,7 @@ export default ({ list, onDelete, onUpdate }) => {
                 <div className="p-1">
                     <img
                         src={row.image}
-                        className="w-48 h-20 object-cover"
+                        className="h-28 aspect-square object-cover"
                         alt=""
                     />
                 </div>

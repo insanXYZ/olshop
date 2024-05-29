@@ -2,6 +2,7 @@ package repository
 
 import (
 	"backend/internal/entity"
+	"backend/internal/model"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -17,10 +18,19 @@ func NewProductRepository(log *logrus.Logger) *ProductRepository {
 	}
 }
 
-func (repo *ProductRepository) GetAllWithManyRelations(products *[]entity.Product, db *gorm.DB) error {
-	err := db.Preload("Category", func(db *gorm.DB) *gorm.DB {
-		return db.Unscoped()
-	}).Preload("ImageProducts").Preload("LikedByUsers").Find(products).Error
+func (repo *ProductRepository) GetAllWithManyRelations(products *[]entity.Product, db *gorm.DB, filter *model.FilterQueryParamProduct) error {
+	query := db.Preload("ImageProducts").Preload("LikedByUsers")
+
+	if filter.Category != "" {
+		query.Joins("JOIN categories ON categories.id = products.category_id").
+			Where("categories.name = ?", filter.Category)
+	}
+
+	if filter.Keyword != "" {
+		query.Where("products.name LIKE ?", "%"+filter.Keyword+"%")
+	}
+
+	err := query.Preload("Category").Find(products).Error
 	return err
 }
 

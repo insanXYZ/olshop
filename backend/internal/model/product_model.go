@@ -53,3 +53,8 @@ type CartedProduct struct {
 	ProductID string `json:"product_id" form:"product_id" validate:"required"`
 	Qty       int    `json:"qty" form:"qty" validate:"required"`
 }
+
+type FilterQueryParamProduct struct {
+	Category string `query:"category"`
+	Keyword  string `query:"keyword"`
+}

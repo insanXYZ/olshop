@@ -39,9 +39,9 @@ func NewProductService(db *gorm.DB, log *logrus.Logger, validate *validator.Vali
 	}
 }
 
-func (service *ProductService) GetAll() ([]*model.ProductResponse, error) {
+func (service *ProductService) GetAll(filter *model.FilterQueryParamProduct) ([]*model.ProductResponse, error) {
 	var products []entity.Product
-	err := service.ProductRepository.GetAllWithManyRelations(&products, service.DB)
+	err := service.ProductRepository.GetAllWithManyRelations(&products, service.DB, filter)
 	if err != nil {
 		return nil, err
 	}

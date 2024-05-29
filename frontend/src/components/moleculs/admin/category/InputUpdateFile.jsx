@@ -11,10 +11,10 @@ export default ({ data, onchangeImage, className }) => {
     };
 
     return (
-        <label className={className} htmlFor="imageCategory">
+        <label className={className} htmlFor="imageCategoryUpdate">
             <input
                 onChange={handleChangeImage}
-                id="imageCategory"
+                id="imageCategoryUpdate"
                 type="file"
                 accept="image/*"
                 className="hidden"

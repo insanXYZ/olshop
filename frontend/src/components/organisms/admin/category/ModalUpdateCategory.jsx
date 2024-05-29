@@ -22,7 +22,7 @@ export default ({ data, onSubmit }) => {
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <Input
                     defaultValue={data.name}
-                    onChange={(v) => setName(v)}
+                    onChange={(v) => setName(v.target.value)}
                     placeholder={"category.."}
                 />
                 <InputUpdateFile

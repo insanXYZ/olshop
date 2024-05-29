@@ -144,13 +144,11 @@ func (service *CategoryService) Update(req *model.UpdateCategory, file *multipar
 			return err
 		}
 
-		categoryUpdate := &entity.Category{
-			Name: req.Name,
-		}
-
-		err := service.CategoryRepository.Save(tx, categoryUpdate)
-		if err != nil {
-			return err
+		if req.Name != "" {
+			err := service.CategoryRepository.Update(tx, category, &entity.Category{Name: req.Name})
+			if err != nil {
+				return err
+			}
 		}
 
 		if file != nil {
@@ -177,12 +175,17 @@ func (service *CategoryService) Update(req *model.UpdateCategory, file *multipar
 				return err
 			}
 
-			categoryUpdate.Image.Name = filename
+			err = service.ImageCategoryRepository.Update(tx, category.Image, &entity.ImageCategory{
+				Name: filename,
+			})
+
+			if err != nil {
+				return err
+			}
 
 		}
 
-		return
-
+		return nil
 	})
 
 	return err

@@ -22,7 +22,9 @@ func (repo *ProductRepository) GetAllWithManyRelations(products *[]entity.Produc
 	query := db.Preload("ImageProducts").Preload("LikedByUsers")
 
 	if filter.Category != "" {
-		query.Joins("JOIN categories ON categories.id = products.category_id").
+		query.Joins("JOIN categories ON categories.id = products.category_id", func(db *gorm.DB) *gorm.DB {
+			return db.Unscoped()
+		}).
 			Where("categories.name = ?", filter.Category)
 	}
 
@@ -30,8 +32,9 @@ func (repo *ProductRepository) GetAllWithManyRelations(products *[]entity.Produc
 		query.Where("products.name LIKE ?", "%"+filter.Keyword+"%")
 	}
 
-	err := query.Preload("Category").Find(products).Error
-	return err
+	return query.Preload("Category", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).Find(products).Error
 }
 
 func (repo *ProductRepository) GetByIdWithManyRelations(products *entity.Product, id any, db *gorm.DB) error {

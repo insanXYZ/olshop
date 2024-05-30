@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 func NewDatabase(viper *viper.Viper, log *logrus.Logger) *gorm.DB {
@@ -17,11 +16,7 @@ func NewDatabase(viper *viper.Viper, log *logrus.Logger) *gorm.DB {
 	database := viper.GetString("DB_NAME")
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, database)
 
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger:                 logger.Default.LogMode(logger.Info),
-		SkipDefaultTransaction: true,
-		PrepareStmt:            true,
-	})
+	db, err := gorm.Open(mysql.Open(dsn))
 
 	if err != nil {
 		log.Fatalf("failed to connect database: %v", err)

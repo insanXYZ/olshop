@@ -7,6 +7,7 @@ import Account from "./pages/Account";
 import Password from "./pages/Password";
 import CategoryAdmin from "./pages/admin/Category";
 import ProductAdmin from "./pages/admin/Product";
+import Dashboard from "./pages/admin/Dashboard";
 import Product from "./pages/Product";
 import Products from "./pages/Products";
 import Liked from "./pages/member/productsliked";
@@ -18,6 +19,16 @@ import IsAuth from "./middlewares/IsAuth";
 import IsAdmin from "./middlewares/IsAdmin";
 
 export default createBrowserRouter([
+    {
+        path: "/admin",
+        element: (
+            <IsAuth>
+                <IsAdmin>
+                    <Dashboard />
+                </IsAdmin>
+            </IsAuth>
+        ),
+    },
     {
         path: "/",
         element: <Home />,

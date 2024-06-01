@@ -24,3 +24,5 @@ func OrderToResponse(entity *entity.Order) *model.OrderResponse {
 		User:         UserToResponse(entity.User),
 	}
 }
+
+//func OrderToReportResponse(order *entity.Order) *model.OrderReport {}

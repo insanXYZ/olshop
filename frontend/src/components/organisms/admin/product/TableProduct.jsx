@@ -32,6 +32,20 @@ export default ({ list, onDelete, onUpdate }) => {
         {
             name: (
                 <div className="font-bold text-xl py-2 pt-0 text-slate-200 text-left">
+                    Profit
+                </div>
+            ),
+            selector: (row) =>
+                toRupiah(row.profit, {
+                    dot: ".",
+                    formal: false,
+                    floatingPoint: 0,
+                }),
+            sortable: true,
+        },
+        {
+            name: (
+                <div className="font-bold text-xl py-2 pt-0 text-slate-200 text-left">
                     Qty
                 </div>
             ),
@@ -84,13 +98,7 @@ export default ({ list, onDelete, onUpdate }) => {
     ];
 
     return list.length > 0 ? (
-        <DataTable
-            columns={columns}
-            data={list}
-            pagination
-            fixedHeader={true}
-            fixedHeaderScrollHeight="700px"
-        />
+        <DataTable columns={columns} data={list} pagination />
     ) : (
         <div className="text-center">Products is empty</div>
     );

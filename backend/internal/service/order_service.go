@@ -3,6 +3,7 @@ package service
 import (
 	"backend/internal/entity"
 	"backend/internal/model"
+	"backend/internal/model/converter"
 	"backend/internal/repository"
 	"crypto/sha512"
 	"encoding/hex"
@@ -15,6 +16,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
+	"time"
 )
 
 type OrderService struct {
@@ -67,6 +69,7 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 		}
 
 		var total int
+		var profit int
 
 		for _, detailOrder := range req.DetailOrders {
 			product := new(entity.Product)
@@ -90,6 +93,7 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 			}
 
 			total += totalPrice
+			profit += detailOrder.Qty * product.Profit
 
 			err = service.DetailOrderRepository.Create(tx, dOrder)
 			if err != nil {
@@ -98,6 +102,7 @@ func (service *OrderService) Create(claims jwt.MapClaims, req *model.CreateOrder
 		}
 
 		order.Total = total
+		order.Profit = profit
 
 		err = service.OrderRepository.Save(tx, order)
 		if err != nil {
@@ -187,4 +192,43 @@ func (service *OrderService) AfterPayment(req *model.AfterPayment) error {
 
 	return errors.New("failed to pay for the order")
 
+}
+
+func (service *OrderService) Report(req *model.ReportOrder) (any, error) {
+	if req.StartFrom != "" {
+		to := req.EndTo
+		if req.EndTo == "" {
+			to = time.Now().Format("2006-01-02")
+		}
+
+		var orders []entity.Order
+		err := service.OrderRepository.FindByFilterDate(service.DB, &orders, req.StartFrom, to)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+
+		res := make([]*model.OrderResponse, len(orders))
+		for i, order := range orders {
+			res[i] = converter.OrderToResponse(&order)
+		}
+
+		return res, nil
+	}
+
+	var date string
+	if req.Filter != "" {
+		date = req.Filter
+	} else if req.EndTo != "" {
+		date = req.EndTo
+	} else {
+		date = time.Now().Format("2006-01-02")
+	}
+
+	order := new(entity.Order)
+	err := service.OrderRepository.TakeByFilterDate(service.DB, order, date)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
+	return converter.OrderToResponse(order), nil
 }

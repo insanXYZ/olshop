@@ -46,3 +46,18 @@ func (controller *OrderController) AfterPayment(c echo.Context) error {
 
 	return httpresponse.Success(c, "success pay for the order", nil)
 }
+
+func (controller *OrderController) Report(c echo.Context) error {
+	req := new(model.ReportOrder)
+	err := c.Bind(req)
+	if err != nil {
+		return err
+	}
+
+	report, err := controller.OrderService.Report(req)
+	if err != nil {
+		return httpresponse.Error(c, err.Error())
+	}
+	return httpresponse.Success(c, "success get report order", report)
+
+}

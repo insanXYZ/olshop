@@ -26,6 +26,7 @@ func ProductToResponse(product *entity.Product, idUser ...string) *model.Product
 		ID:            product.ID,
 		Name:          product.Name,
 		Price:         product.Price,
+		Profit:        product.Profit,
 		Qty:           product.Qty,
 		Description:   product.Description,
 		CreatedAt:     product.CreatedAt,

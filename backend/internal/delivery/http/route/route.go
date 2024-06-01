@@ -54,5 +54,6 @@ func (c *RouteConfig) SetupAuthRoute(api *echo.Group) {
 	api.POST("/carts", c.UserCartedProductController.Carted, c.Middleware.Member)
 	api.PUT("/carts/:id", c.UserCartedProductController.Update, c.Middleware.Member)
 	api.POST("/orders", c.OrderController.Create, c.Middleware.Member)
+	api.GET("/orders/report", c.OrderController.Report, c.Middleware.Admin)
 	api.DELETE("/carts", c.UserCartedProductController.Delete, c.Middleware.Member)
 }

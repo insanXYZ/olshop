@@ -3,6 +3,7 @@ create table products
     id varchar(100) primary key not null ,
     name varchar(255) not null,
     price int not null,
+    profit int not null,
     qty int not null,
     description text not null ,
     category_id varchar(100) not null ,

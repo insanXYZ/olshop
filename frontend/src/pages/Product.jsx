@@ -59,7 +59,9 @@ export default () => {
                 ></script>
             </Helmet>
             <Main loading={product.length == 0}>
-                <Header handleCheckout={handleCheckout} data={product} />
+                <div className="w-full h-full flex gap-5 relative overflow-x-hidden">
+                    <Header handleCheckout={handleCheckout} data={product} />
+                </div>
             </Main>
         </>
     );

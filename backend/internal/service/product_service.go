@@ -202,6 +202,7 @@ func (service *ProductService) Update(req *model.UpdateProduct, images []*multip
 		err = service.ProductRepository.Update(tx, product, &entity.Product{
 			Name:        req.Name,
 			Price:       req.Price,
+			Profit:      req.Profit,
 			Qty:         req.Qty,
 			CategoryID:  req.CategoryID,
 			Description: req.Description,

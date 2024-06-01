@@ -1,5 +1,4 @@
 import Dashboard from "../components/templates/Dashboard";
-import Card from "../components/atoms/Card.Dashboard";
 import Input from "../components/atoms/Input";
 import Button from "../components/atoms/Button";
 import { useSelector } from "react-redux";
@@ -49,46 +48,44 @@ export default () => {
 
     return (
         <Dashboard>
-            <Card>
-                <form
-                    onSubmit={handleSubmit}
-                    className={"w-full flex items-center gap-5"}
+            <form
+                onSubmit={handleSubmit}
+                className={
+                    "w-full flex items-center gap-5 p-5 bg-dark-neutral rounded-lg"
+                }
+            >
+                <div className="flex flex-col gap-5 w-4/5">
+                    <Input
+                        className={"bg-neutral"}
+                        defaultValue={user.name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <Input
+                        className={"bg-neutral"}
+                        defaultValue={user.email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <Button className={"bg-white text-neutral rounded-full"}>
+                        Update
+                    </Button>
+                </div>
+                <label
+                    htmlFor="image"
+                    className="w-1/5 p-3 flex items-center justify-center cursor-pointer"
                 >
-                    <div className="flex flex-col gap-5 w-4/5">
-                        <Input
-                            className={"bg-neutral"}
-                            defaultValue={user.name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                        <Input
-                            className={"bg-neutral"}
-                            defaultValue={user.email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <Button
-                            className={"bg-white text-neutral rounded-full"}
-                        >
-                            Update
-                        </Button>
-                    </div>
-                    <label
-                        htmlFor="image"
-                        className="w-1/5 p-3 flex items-center justify-center cursor-pointer"
-                    >
-                        <img
-                            src={image == null ? user.image : image.url}
-                            className="w-full rounded-full aspect-square object-cover"
-                        />
-                        <input
-                            onChange={handleChangeImage}
-                            type="file"
-                            id="image"
-                            accept="image/*"
-                            className="hidden"
-                        />
-                    </label>
-                </form>
-            </Card>
+                    <img
+                        src={image == null ? user.image : image.url}
+                        className="w-full rounded-full aspect-square object-cover"
+                    />
+                    <input
+                        onChange={handleChangeImage}
+                        type="file"
+                        id="image"
+                        accept="image/*"
+                        className="hidden"
+                    />
+                </label>
+            </form>
         </Dashboard>
     );
 };

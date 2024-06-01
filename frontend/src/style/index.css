@@ -3,45 +3,84 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "lato";
-  src: url("/fonts/Lato-Regular.ttf");
+    font-family: "lato";
+    src: url("/fonts/Lato-Regular.ttf");
 }
 @font-face {
-  font-family: "lato-b";
-  src: url("/fonts/Lato-Bold.ttf");
-}
-
-@font-face {
-  font-family: "caveat";
-  src: url("/fonts/Caveat-Regular.ttf");
-}
-@font-face {
-  font-family: "caveat-b";
-  src: url("/fonts/Caveat-Bold.ttf");
+    font-family: "lato-b";
+    src: url("/fonts/Lato-Bold.ttf");
 }
 
 @font-face {
-  font-family: "outfit";
-  src: url("/fonts/Outfit-Regular.ttf");
+    font-family: "caveat";
+    src: url("/fonts/Caveat-Regular.ttf");
 }
 @font-face {
-  font-family: "outfit-b";
-  src: url("/fonts/Outfit-Bold.ttf");
+    font-family: "caveat-b";
+    src: url("/fonts/Caveat-Bold.ttf");
+}
+
+@font-face {
+    font-family: "outfit";
+    src: url("/fonts/Outfit-Regular.ttf");
 }
 @font-face {
-  font-family: "outfit-l";
-  src: url("/fonts/Outfit-Light.ttf");
+    font-family: "outfit-b";
+    src: url("/fonts/Outfit-Bold.ttf");
+}
+@font-face {
+    font-family: "outfit-l";
+    src: url("/fonts/Outfit-Light.ttf");
 }
 
 * {
-  font-family: "outfit-l";
+    font-family: "outfit-l";
 }
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
+    -webkit-appearance: none;
 }
 
 input[type="number"] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+/* Untuk Webkit Browsers seperti Chrome, Safari, dan Edge */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px; /* Membuat sudut tidak tajam */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px; /* Membuat sudut tidak tajam */
+    border: 3px solid #f0f0f0; /* Memberikan sedikit jarak antara track dan thumb */
+}
+
+/* Khusus elemen tertentu */
+.custom-scrollbar {
+    scrollbar-width: thin; /* Untuk Firefox */
+    scrollbar-color: #ccc #f0f0f0; /* Untuk Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #303241;
+    border-radius: 10px; /* Membuat sudut tidak tajam */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 10px; /* Membuat sudut tidak tajam */
+    border: 5px solid #303241; /* Memberikan sedikit jarak antara track dan thumb */
 }

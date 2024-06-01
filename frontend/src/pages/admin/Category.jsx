@@ -1,5 +1,4 @@
 import Dashboard from "../../components/templates/Dashboard";
-import Card from "../../components/atoms/Card.Dashboard";
 import { useEffect, useRef, useState } from "react";
 import ModalCreateCategory from "../../components/organisms/admin/category/ModalCreateCategory";
 import ModalDeleteCategory from "../../components/organisms/admin/category/ModalDeleteCategory";
@@ -10,6 +9,7 @@ import TableCategory from "../../components/organisms/admin/category/TableCatego
 import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../../redux/reducer/categories";
 import { toast } from "react-toastify";
+import WrapComp from "../../components/atoms/WrapComponent";
 
 export default () => {
     const [categoryInput, setCategoryInput] = useState("");
@@ -112,14 +112,18 @@ export default () => {
                 data={dataUpdate}
             />
             <Dashboard>
-                <Card className={"flex flex-col gap-10 w-full"}>
-                    <HeaderCategory />
-                    <TableCategory
-                        list={list}
-                        onUpdate={handleUpdate}
-                        onDelete={handleDelete}
-                    />
-                </Card>
+                <div className={"flex flex-col gap-5 w-full"}>
+                    <WrapComp>
+                        <HeaderCategory />
+                    </WrapComp>
+                    <WrapComp>
+                        <TableCategory
+                            list={list}
+                            onUpdate={handleUpdate}
+                            onDelete={handleDelete}
+                        />
+                    </WrapComp>
+                </div>
             </Dashboard>
         </>
     );

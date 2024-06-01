@@ -9,6 +9,7 @@ type Product struct {
 	ID                  string               `gorm:"primary_key;column:id"`
 	Name                string               `gorm:"column:name"`
 	Price               int                  `gorm:"column:price"`
+	Profit              int                  `gorm:"column:profit"`
 	Qty                 int                  `gorm:"column:qty"`
 	CategoryID          string               `gorm:"column:category_id"`
 	Description         string               `gorm:"column:description"`

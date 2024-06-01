@@ -58,3 +58,19 @@ func (repo *ProductRepository) UnlikedProduct(db *gorm.DB, user *entity.User, pr
 	err := db.Model(product).Association("LikedByUsers").Delete(user)
 	return err
 }
+
+func (repo *ProductRepository) TakeProductPopularWithDate(db *gorm.DB, date string) (*entity.Product, error) {
+	product := new(entity.Product)
+
+	err := db.Raw("select * from products where id in (select product_id from detail_orders where date(created_at) = ? order by sum(qty) desc) limit 1", date).Take(product).Error
+
+	return product, err
+}
+
+func (repo *ProductRepository) TakeProductPopularWithBetween(db *gorm.DB, from, to string) (*entity.Product, error) {
+	product := new(entity.Product)
+
+	err := db.Raw("select * from products where id in (select product_id from detail_orders where date(created_at) between ? and ? order by sum(qty) desc) limit 1", from, to).Take(product).Error
+
+	return product, err
+}

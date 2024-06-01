@@ -194,41 +194,90 @@ func (service *OrderService) AfterPayment(req *model.AfterPayment) error {
 
 }
 
-func (service *OrderService) Report(req *model.ReportOrder) (any, error) {
-	if req.StartFrom != "" {
-		to := req.EndTo
-		if req.EndTo == "" {
-			to = time.Now().Format("2006-01-02")
-		}
+func (service *OrderService) Report(req *model.ReportOrder) (*model.ReportOrderResponse, error) {
 
-		var orders []entity.Order
-		err := service.OrderRepository.FindByFilterDate(service.DB, &orders, req.StartFrom, to)
-		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+	res := new(model.ReportOrderResponse)
+
+	if req.Filter != "" {
+
+		err := service.DetailOrderRepository.TakeProfitOrder(service.DB, res, req.Filter)
+		if err != nil && errors.Is(gorm.ErrRecordNotFound, err) {
+			return res, nil
+		}
+		//
+		var order []entity.Order
+		err = service.OrderRepository.FindWithWhereDate(service.DB, &order, req.Filter)
+		if err != nil {
 			return nil, err
 		}
 
-		res := make([]*model.OrderResponse, len(orders))
-		for i, order := range orders {
-			res[i] = converter.OrderToResponse(&order)
+		orderRes := make([]*model.OrderResponse, len(order))
+		for i, e := range order {
+			orderRes[i] = converter.OrderToResponse(&e)
 		}
 
-		return res, nil
-	}
+		res.Orders = orderRes
 
-	var date string
-	if req.Filter != "" {
-		date = req.Filter
-	} else if req.EndTo != "" {
-		date = req.EndTo
+		err = service.DetailOrderRepository.FindWithWhereDateGrouped(service.DB, res, req.Filter)
+		if err != nil {
+			return nil, err
+		}
+
+		product, err := service.ProductRepository.TakeProductPopularWithDate(service.DB, req.Filter)
+		if err != nil {
+			return nil, err
+		}
+
+		res.ProductPopular.Product = converter.ProductToResponse(product)
+
+		err = service.DetailOrderRepository.TakeStatisticProductPopular(service.DB, res, req.Filter)
+		if err != nil {
+			return nil, err
+		}
+
+	} else if req.StartFrom != "" {
+		to := time.Now().Format("2006-01-02")
+		if req.EndTo != "" {
+			to = req.EndTo
+		}
+
+		err := service.DetailOrderRepository.TakeProfitOrderWithWhereBetween(service.DB, res, req.StartFrom, to)
+		if err != nil && errors.Is(gorm.ErrRecordNotFound, err) {
+			return res, nil
+		}
+		var order []entity.Order
+		err = service.OrderRepository.FindWithWhereBetweenDate(service.DB, &order, req.StartFrom, to)
+		if err != nil {
+			return nil, err
+		}
+
+		orderRes := make([]*model.OrderResponse, len(order))
+		for i, e := range order {
+			orderRes[i] = converter.OrderToResponse(&e)
+		}
+
+		res.Orders = orderRes
+
+		err = service.DetailOrderRepository.FindWithWhereBetweenDateGrouped(service.DB, res, req.StartFrom, to)
+		if err != nil {
+			return nil, err
+		}
+
+		product, err := service.ProductRepository.TakeProductPopularWithBetween(service.DB, req.StartFrom, to)
+		if err != nil {
+			return nil, err
+		}
+
+		res.ProductPopular.Product = converter.ProductToResponse(product)
+
+		err = service.DetailOrderRepository.TakeStatisticProductPopularWithBetweenDate(service.DB, res, req.StartFrom, to)
+		if err != nil {
+			return nil, err
+		}
+
 	} else {
-		date = time.Now().Format("2006-01-02")
+		return nil, errors.New("filter or start from or end to is required")
 	}
 
-	order := new(entity.Order)
-	err := service.OrderRepository.TakeByFilterDate(service.DB, order, date)
-	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
-	}
-
-	return converter.OrderToResponse(order), nil
+	return res, nil
 }

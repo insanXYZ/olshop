@@ -6,20 +6,43 @@ import LogOrders from "../../components/organisms/admin/Dashboard/LogOrders";
 import WrapComp from "../../components/atoms/WrapComponent";
 import { useEffect, useState } from "react";
 import request from "../../utils/request/request";
+import { useSearchParams } from "react-router-dom";
 
 export default () => {
-    const [date, setData] = useState(null);
+    const [data, setData] = useState(null);
+    const [req, setReq] = useState(false);
+    const [searchParams] = useSearchParams();
+    const filter = searchParams.get("filter");
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
 
-    // useEffect(() => {
-    //     request
-    //         .get("/api/orders/report")
-    //         .then((res) => {
-    //             console.log(res.data);
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // });
+    useEffect(() => {
+        let query;
+
+        if (filter != null) {
+            query = "filter=" + filter;
+        } else if (from != null) {
+            query = "from=" + from;
+            if (to != null) {
+                query += "&to=" + to;
+            } else {
+                query += "&to=" + new Date().toISOString().slice(0, 10);
+            }
+        } else {
+            query = "filter=" + new Date().toISOString().slice(0, 10);
+        }
+
+        request
+            .get("/api/orders/report?" + query)
+            .then((res) => {
+                setData(res.data.data);
+                console.log(res.data);
+                setReq(true);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
 
     return (
         <Dashboard className={"relative overflow-x-hidden"}>
@@ -27,9 +50,13 @@ export default () => {
                 <WrapComp>
                     <Title />
                 </WrapComp>
-                <HeaderCols />
-                <SecondCols />
-                <LogOrders />
+                {req && (
+                    <>
+                        <HeaderCols data={data} />
+                        <SecondCols dataColumn={data} />
+                        <LogOrders />
+                    </>
+                )}
             </div>
         </Dashboard>
     );

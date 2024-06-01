@@ -19,8 +19,6 @@ ChartJS.register(
     Legend
 );
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
 const options = {
     responsive: true,
     plugins: {
@@ -30,22 +28,37 @@ const options = {
     },
 };
 
-const data = {
-    labels,
-    datasets: [
-        {
-            data: labels.map(() => Math.floor(Math.random() * 1000)),
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-    ],
-};
+export default ({ dataColumn }) => {
+    const labels = dataColumn.orders_grouped.map((v) => v.date);
 
-export default () => {
+    let dataBar = {
+        labels: labels,
+        datasets: [
+            {
+                label: "Keuntungan kotor",
+                data: dataColumn.orders_grouped.map((v) => v.gross_profit),
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+            {
+                label: "Keuntungan bersih",
+                data: dataColumn.orders_grouped.map((v) => v.net_profit),
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+            {
+                label: "Produk terjual",
+                data: dataColumn.orders_grouped.map(
+                    (v) => v.amount_product_sold
+                ),
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+        ],
+    };
+
     return (
         <div className="flex h-full gap-5">
             <WrapComp>
                 <div className="w-[800px]">
-                    <Bar options={options} data={data} />
+                    <Bar options={options} data={dataBar} />
                 </div>
             </WrapComp>
             <div className="w-full h-[440px] bg-dark-neutral flex justify-center items-center rounded-lg">

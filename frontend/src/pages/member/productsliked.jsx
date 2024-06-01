@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import request from "../../utils/request/request";
 import { toast } from "react-toastify";
 import ListProductLiked from "../../components/organisms/member/product/like/ListProductLiked";
+import WrapComp from "../../components/atoms/WrapComponent";
 
 export default () => {
     const [req, setReq] = useState(false);
@@ -27,9 +28,9 @@ export default () => {
 
     return (
         <Dashboard className={"flex flex-col gap-5"} loading={req == false}>
-            <div>
+            <WrapComp>
                 <HeaderLiked />
-            </div>
+            </WrapComp>
             <div className="h-full">
                 {req != false && data.length > 0 && (
                     <div className="grid grid-cols-5">

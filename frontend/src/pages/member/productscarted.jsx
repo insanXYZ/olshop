@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProductsCarted, setQty } from "../../redux/reducer/productCarted";
 import BottomBarOption from "../../components/organisms/member/product/cart/BottomBarOption";
 import { Helmet } from "react-helmet";
+import WrapComp from "../../components/atoms/WrapComponent";
 
 export default () => {
     const [req, setReq] = useState(false);
@@ -118,15 +119,19 @@ export default () => {
             </Helmet>
             <Dashboard className={"flex flex-col gap-5"} loading={req == false}>
                 <div className={"flex flex-col gap-5"}>
-                    <HeaderCart />
+                    <WrapComp>
+                        <HeaderCart />
+                    </WrapComp>
                     {req == true && productsCarted.length != 0 && (
-                        <TableProductCarted
-                            handleChangeCounter={handleChangeCounter}
-                            data={productsCarted}
-                            handleChangeSelectedTable={
-                                handleChangeSelectedTable
-                            }
-                        />
+                        <WrapComp>
+                            <TableProductCarted
+                                handleChangeCounter={handleChangeCounter}
+                                data={productsCarted}
+                                handleChangeSelectedTable={
+                                    handleChangeSelectedTable
+                                }
+                            />
+                        </WrapComp>
                     )}
                     {req == true && productsCarted.length == 0 && (
                         <div className="text-center">cart empty</div>
@@ -135,13 +140,15 @@ export default () => {
                 {req == true &&
                     productsCarted.length != 0 &&
                     selectedRows.length != 0 && (
-                        <BottomBarOption
-                            onDelete={handleDelete}
-                            onCheckout={handleCheckout}
-                            total={selectedRows.reduce((acc, curr) => {
-                                return acc + curr.qty * curr.product.price;
-                            }, 0)}
-                        />
+                        <WrapComp>
+                            <BottomBarOption
+                                onDelete={handleDelete}
+                                onCheckout={handleCheckout}
+                                total={selectedRows.reduce((acc, curr) => {
+                                    return acc + curr.qty * curr.product.price;
+                                }, 0)}
+                            />
+                        </WrapComp>
                     )}
             </Dashboard>
         </>

@@ -3,6 +3,7 @@ import Input from "../components/atoms/Input";
 import Button from "../components/atoms/Button";
 import { useState } from "react";
 import request from "../utils/request/request";
+import WrapComp from "../components/atoms/WrapComponent";
 
 export default () => {
     const [oldPassword, setOldPassword] = useState("");
@@ -28,24 +29,26 @@ export default () => {
 
     return (
         <Dashboard>
-            <form
-                onSubmit={handleSubmit}
-                className={"w-full flex flex-col gap-5"}
-            >
-                <Input
-                    className={"bg-neutral"}
-                    placeholder={"Old Password"}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                />
-                <Input
-                    className={"bg-neutral"}
-                    placeholder={"New Password"}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                />
-                <Button className={"bg-white text-neutral rounded-full"}>
-                    Update
-                </Button>
-            </form>
+            <WrapComp>
+                <form
+                    onSubmit={handleSubmit}
+                    className={"w-full flex flex-col gap-5"}
+                >
+                    <Input
+                        className={"bg-neutral"}
+                        placeholder={"Old Password"}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                    />
+                    <Input
+                        className={"bg-neutral"}
+                        placeholder={"New Password"}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <Button className={"bg-white text-neutral rounded-full"}>
+                        Update
+                    </Button>
+                </form>
+            </WrapComp>
         </Dashboard>
     );
 };

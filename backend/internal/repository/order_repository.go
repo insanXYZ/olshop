@@ -22,16 +22,12 @@ func (repo *OrderRepository) TakeWithGetRelationDetailOrder(db *gorm.DB, order *
 	return err
 }
 
-func (repo *OrderRepository) TakeByFilterDate(db *gorm.DB, order *entity.Order, date string) error {
-	err := db.Preload("DetailOrders.Product", func(d *gorm.DB) *gorm.DB {
-		return d.Unscoped()
-	}).Where("date(created_at) = ?", date).Take(order).Error
+func (repo *OrderRepository) FindWithWhereDate(db *gorm.DB, model *[]entity.Order, date string) error {
+	err := db.Where("date(created_at) = ?", date).Find(model).Error
 	return err
 }
 
-func (repo *OrderRepository) FindByFilterDate(db *gorm.DB, order *[]entity.Order, from string, to string) error {
-	err := db.Preload("DetailOrders.Product", func(d *gorm.DB) *gorm.DB {
-		return d.Unscoped()
-	}).Where("date(created_at) between ? and ?", from, to).Find(order).Error
+func (repo *OrderRepository) FindWithWhereBetweenDate(db *gorm.DB, model *[]entity.Order, from, to string) error {
+	err := db.Where("date(created_at) between ? and ?", from, to).Find(model).Error
 	return err
 }

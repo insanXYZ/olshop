@@ -8,18 +8,26 @@ type OrderResponse struct {
 	ID           string                 `json:"id,omitempty"`
 	UserID       string                 `json:"user_id,omitempty"`
 	Total        int                    `json:"total,omitempty"`
+	Profit       int                    `json:"profit,omitempty"`
 	CreatedAt    time.Time              `json:"created_at,omitempty"`
 	DetailOrders []*DetailOrderResponse `json:"detail_orders,omitempty"`
 	User         *UserResponse          `json:"user,omitempty"`
 }
 
-type OrderReport struct {
-	GrossProfit       int                    `json:"gross_profit"`        //keuntungan kotor
-	NetProfit         int                    `json:"net_profit"`          //keuntungan bersih
-	AmountProductSold int                    `json:"amount_product_sold"` //jumlah terjual
-	ProductPopular    *ProductResponse       `json:"product_popular"`
-	OrdersGrouped     []*OrdersReportGrouped `json:"orders_grouped"`
-	Orders            []*OrderResponse       `json:"orders"`
+type ReportOrderResponse struct {
+	GrossProfit       int                   `json:"gross_profit"`        //keuntungan kotor
+	NetProfit         int                   `json:"net_profit"`          //keuntungan bersih
+	AmountProductSold int                   `json:"amount_product_sold"` //jumlah terjual
+	OrdersGrouped     []OrdersReportGrouped `json:"orders_grouped"`
+	Orders            []*OrderResponse      `json:"orders"`
+	ProductPopular    ProductPopular        `json:"product_popular"`
+}
+
+type ProfitOrder struct {
+	GrossProfit       int `json:"gross_profit"`        //keuntungan kotor
+	NetProfit         int `json:"net_profit"`          //keuntungan bersih
+	AmountProductSold int `json:"amount_product_sold"` //jumlah terjual
+
 }
 
 type OrdersReportGrouped struct {
@@ -43,6 +51,6 @@ type AfterPayment struct {
 
 type ReportOrder struct {
 	Filter    string `query:"filter"`
-	StartFrom string `query:"start_from"`
-	EndTo     string `query:"end_to"`
+	StartFrom string `query:"from"`
+	EndTo     string `query:"to"`
 }

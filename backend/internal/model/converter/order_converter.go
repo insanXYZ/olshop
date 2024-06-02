@@ -19,10 +19,10 @@ func OrderToResponse(entity *entity.Order) *model.OrderResponse {
 	return &model.OrderResponse{
 		ID:           entity.ID,
 		Total:        entity.Total,
+		Profit:       entity.Profit,
+		Status:       entity.Status,
 		CreatedAt:    entity.CreatedAt,
 		DetailOrders: detailOrders,
 		User:         UserToResponse(entity.User),
 	}
 }
-
-//func OrderToReportResponse(order *entity.Order) *model.OrderReport {}

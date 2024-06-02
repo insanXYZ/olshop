@@ -6,7 +6,7 @@ export default ({ data }) => {
     return (
         <div className="grid grid-cols-3 gap-10">
             <WrapComp>
-                <CardHeader title={"Keuntungan Kotor"}>
+                <CardHeader title={"Gross Profit"}>
                     {toRupiah(data.gross_profit, {
                         dot: ".",
                         formal: false,
@@ -15,7 +15,7 @@ export default ({ data }) => {
                 </CardHeader>
             </WrapComp>
             <WrapComp>
-                <CardHeader title={"Keuntungan Bersih"}>
+                <CardHeader title={"Net Profit"}>
                     {toRupiah(data.net_profit, {
                         dot: ".",
                         formal: false,
@@ -24,7 +24,7 @@ export default ({ data }) => {
                 </CardHeader>
             </WrapComp>
             <WrapComp>
-                <CardHeader title={"Produk Terjual"}>
+                <CardHeader title={"Product Sold"}>
                     {data.amount_product_sold}
                 </CardHeader>
             </WrapComp>

@@ -13,7 +13,6 @@ export default () => {
         request
             .get("/api/products/" + id)
             .then((res) => {
-                console.log(res.data);
                 setProduct(res.data.data);
             })
             .catch((err) => {

@@ -5,7 +5,6 @@ import (
 	"backend/internal/model/converter"
 	"backend/internal/service"
 	"backend/internal/utils/httpresponse"
-	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
@@ -95,7 +94,6 @@ func (controller *UserController) UpdateUser(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(req)
 
 	err = controller.UserService.UpdateUser(c, claims, req)
 	if err != nil {

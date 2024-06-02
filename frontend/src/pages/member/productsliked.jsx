@@ -14,7 +14,6 @@ export default () => {
             request
                 .get("/api/users/products/like")
                 .then((res) => {
-                    console.log(res.data);
                     setData(res.data.data);
                 })
                 .catch((err) => {

@@ -3,7 +3,6 @@ package repository
 import (
 	"backend/internal/entity"
 	"backend/internal/model"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"time"
@@ -38,7 +37,7 @@ func (repo *DetailOrderRepository) TakeProfitOrder(db *gorm.DB, response *model.
 func (repo *DetailOrderRepository) TakeProfitOrderWithWhereBetween(db *gorm.DB, response *model.ReportOrderResponse, from, to string) error {
 	modelBuff := new(model.ProfitOrder)
 
-	err := db.Raw("select sum(total) as gross_profit, sum(products.profit * detail_orders.qty) , sum(detail_orders.qty) from detail_orders join products on detail_orders.product_id = products.id where order_id in (select id from orders where date(created_at) between ? and ?);", from, to).Scan(modelBuff).Error
+	err := db.Raw("select sum(total) as gross_profit, sum(products.profit * detail_orders.qty) as net_profit, sum(detail_orders.qty) as amount_product_sold from detail_orders join products on detail_orders.product_id = products.id where order_id in (select id from orders where date(created_at) between ? and ?);", from, to).Scan(modelBuff).Error
 
 	if err != nil {
 		return err
@@ -101,8 +100,6 @@ func (repo *DetailOrderRepository) TakeStatisticProductPopular(db *gorm.DB, resp
 		return err
 	}
 
-	fmt.Println(res)
-
 	response.ProductPopular.Statistic = &res
 	return nil
 }
@@ -110,7 +107,7 @@ func (repo *DetailOrderRepository) TakeStatisticProductPopular(db *gorm.DB, resp
 func (repo *DetailOrderRepository) TakeStatisticProductPopularWithBetweenDate(db *gorm.DB, response *model.ReportOrderResponse, from, to string) error {
 	var res model.DataStatistic
 
-	err := db.Raw("select sum(detail_orders.total), sum(products.profit * detail_orders.qty) , sum(detail_orders.qty) from detail_orders JOIN products on products.id = detail_orders.product_id where date(detail_orders.created_at) between ? and ? group by detail_orders.product_id order by sum(detail_orders.qty) desc limit 1;", from, to).Scan(&res).Error
+	err := db.Raw("select sum(detail_orders.total) as total, sum(products.profit * detail_orders.qty) as profit , sum(detail_orders.qty) as qty from detail_orders JOIN products on products.id = detail_orders.product_id where date(detail_orders.created_at) between ? and ? group by detail_orders.product_id order by sum(detail_orders.qty) desc limit 1;", from, to).Scan(&res).Error
 
 	if err != nil {
 		return err

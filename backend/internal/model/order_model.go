@@ -9,6 +9,7 @@ type OrderResponse struct {
 	UserID       string                 `json:"user_id,omitempty"`
 	Total        int                    `json:"total,omitempty"`
 	Profit       int                    `json:"profit,omitempty"`
+	Status       string                 `json:"status,omitempty"`
 	CreatedAt    time.Time              `json:"created_at,omitempty"`
 	DetailOrders []*DetailOrderResponse `json:"detail_orders,omitempty"`
 	User         *UserResponse          `json:"user,omitempty"`

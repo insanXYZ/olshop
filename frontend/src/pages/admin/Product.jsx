@@ -29,10 +29,6 @@ export default () => {
         }, 50);
     };
 
-    useEffect(() => {
-        console.log(dataUpdate);
-    }, [dataUpdate]);
-
     const handleConfirmDelete = () => {
         request
             .delete("/api/products/" + dataDelete.id)

@@ -6,7 +6,7 @@ import LogOrders from "../../components/organisms/admin/Dashboard/LogOrders";
 import WrapComp from "../../components/atoms/WrapComponent";
 import { useEffect, useState } from "react";
 import request from "../../utils/request/request";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default () => {
     const [data, setData] = useState(null);
@@ -36,25 +36,30 @@ export default () => {
             .get("/api/orders/report?" + query)
             .then((res) => {
                 setData(res.data.data);
-                console.log(res.data);
                 setReq(true);
             })
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+    }, [filter, from, to]);
+
+    const navigate = useNavigate();
+
+    const handlechangeFilter = (v) => {
+        navigate(v.target.value);
+    };
 
     return (
         <Dashboard className={"relative overflow-x-hidden"}>
             <div className="flex flex-col gap-5">
                 <WrapComp>
-                    <Title />
+                    <Title onChange={handlechangeFilter} />
                 </WrapComp>
                 {req && (
                     <>
                         <HeaderCols data={data} />
                         <SecondCols dataColumn={data} />
-                        <LogOrders />
+                        <LogOrders data={data} />
                     </>
                 )}
             </div>

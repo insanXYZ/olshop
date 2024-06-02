@@ -201,10 +201,9 @@ func (service *OrderService) Report(req *model.ReportOrder) (*model.ReportOrderR
 	if req.Filter != "" {
 
 		err := service.DetailOrderRepository.TakeProfitOrder(service.DB, res, req.Filter)
-		if err != nil && errors.Is(gorm.ErrRecordNotFound, err) {
+		if err != nil || res.GrossProfit == 0 {
 			return res, nil
 		}
-		//
 		var order []entity.Order
 		err = service.OrderRepository.FindWithWhereDate(service.DB, &order, req.Filter)
 		if err != nil {
@@ -236,6 +235,7 @@ func (service *OrderService) Report(req *model.ReportOrder) (*model.ReportOrderR
 		}
 
 	} else if req.StartFrom != "" {
+
 		to := time.Now().Format("2006-01-02")
 		if req.EndTo != "" {
 			to = req.EndTo

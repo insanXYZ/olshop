@@ -9,6 +9,9 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import WrapComp from "../../../atoms/WrapComponent";
+import CardProduct from "../../../moleculs/home/CardProduct";
+import CardProductPopular from "../../../moleculs/admin/Dashboard/CardProductPopular";
+import toRupiah from "@develoka/angka-rupiah-js";
 
 ChartJS.register(
     CategoryScale,
@@ -29,26 +32,38 @@ const options = {
 };
 
 export default ({ dataColumn }) => {
-    const labels = dataColumn.orders_grouped.map((v) => v.date);
+    const labels =
+        dataColumn.orders_grouped != null
+            ? dataColumn.orders_grouped.map((v) => v.date)
+            : [];
 
     let dataBar = {
         labels: labels,
         datasets: [
             {
-                label: "Keuntungan kotor",
-                data: dataColumn.orders_grouped.map((v) => v.gross_profit),
+                label: "Gross Profit",
+                data:
+                    dataColumn.orders_grouped != null
+                        ? dataColumn.orders_grouped.map((v) => v.gross_profit)
+                        : [],
                 backgroundColor: "rgba(255, 99, 132, 0.5)",
             },
             {
-                label: "Keuntungan bersih",
-                data: dataColumn.orders_grouped.map((v) => v.net_profit),
+                label: "Net Profit",
+                data:
+                    dataColumn.orders_grouped != null
+                        ? dataColumn.orders_grouped.map((v) => v.net_profit)
+                        : [],
                 backgroundColor: "rgba(255, 99, 132, 0.5)",
             },
             {
-                label: "Produk terjual",
-                data: dataColumn.orders_grouped.map(
-                    (v) => v.amount_product_sold
-                ),
+                label: "Product Sold",
+                data:
+                    dataColumn.orders_grouped != null
+                        ? dataColumn.orders_grouped.map(
+                              (v) => v.amount_product_sold
+                          )
+                        : [],
                 backgroundColor: "rgba(255, 99, 132, 0.5)",
             },
         ],
@@ -61,9 +76,50 @@ export default ({ dataColumn }) => {
                     <Bar options={options} data={dataBar} />
                 </div>
             </WrapComp>
-            <div className="w-full h-[440px] bg-dark-neutral flex justify-center items-center rounded-lg">
-                Produk populer tidak ada
-            </div>
+            {dataColumn.product_popular.product == null ? (
+                <div className="w-full h-[440px] bg-dark-neutral flex justify-center items-center rounded-lg">
+                    Produk populer tidak ada
+                </div>
+            ) : (
+                <div className="w-full flex flex-col gap-6 h-[440px]">
+                    <WrapComp>
+                        <span className="font-outfit-b">Produk terpopuler</span>
+                    </WrapComp>
+                    <div className="flex gap-5 w-full h-full">
+                        <div className="w-[250px] h-full ">
+                            <CardProduct
+                                className="h-full"
+                                product={dataColumn.product_popular.product}
+                            />
+                        </div>
+                        <div className="h-full w-full gap-1 flex flex-col justify-between">
+                            <CardProductPopular title={"Gross Profit"}>
+                                {toRupiah(
+                                    dataColumn.product_popular.statistic.total,
+                                    {
+                                        dot: ".",
+                                        formal: false,
+                                        floatingPoint: 0,
+                                    }
+                                )}{" "}
+                            </CardProductPopular>
+                            <CardProductPopular title={"Net Profit"}>
+                                {toRupiah(
+                                    dataColumn.product_popular.statistic.profit,
+                                    {
+                                        dot: ".",
+                                        formal: false,
+                                        floatingPoint: 0,
+                                    }
+                                )}{" "}
+                            </CardProductPopular>
+                            <CardProductPopular title={"Amount Sold"}>
+                                {dataColumn.product_popular.statistic.qty}
+                            </CardProductPopular>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
